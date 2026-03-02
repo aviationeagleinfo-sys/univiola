@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Opere - Uni Viola</title>
-     <link rel="icon" type="image/x-icon" href="/media/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/media/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
@@ -50,10 +50,13 @@
             background: var(--glass-bg); backdrop-filter: blur(10px);
             border-radius: 20px; border: 1px solid var(--glass-border);
             overflow: hidden; transition: 0.3s; position: relative;
+            display: flex; flex-direction: column;
         }
 
         .work-img { width: 100%; height: 220px; object-fit: cover; }
-        .work-info { padding: 20px; }
+        .work-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column;}
+        
+        .actions-container { margin-top: auto; padding-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;}
 
         #adminPanel {
             background: rgba(0,0,0,0.7); padding: 30px; border-radius: 20px;
@@ -62,17 +65,36 @@
             box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
         }
 
-        input, textarea {
+        input[type="text"], textarea {
             width: 100%; padding: 12px; margin: 10px 0;
             background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
             color: white; border-radius: 10px; box-sizing: border-box;
         }
 
-        .btn { padding: 12px 25px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; }
-        .btn-pubblica { background: #1DB954; color: white; width: 100%; margin-top: 10px; }
-        .btn-delete { background: #ff4d4d; color: white; margin-top: 10px; font-size: 0.8rem; }
+        .checkbox-group {
+            margin: 10px 0; font-size: 0.9rem; display: flex; gap: 15px;
+        }
+
+        .btn { padding: 10px 20px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; text-align: center; font-family: 'Montserrat', sans-serif;}
+        .btn-pubblica { background: #1DB954; color: white; width: 100%; margin-top: 15px; padding: 15px;}
+        .btn-cancel { background: #555; color: white; width: 100%; margin-top: 5px; display: none; padding: 10px;}
+        .btn-delete { background: #ff4d4d; color: white; flex: 1; font-size: 0.8rem; }
+        .btn-edit { background: #ffaa00; color: white; flex: 1; font-size: 0.8rem; }
+        .btn-user-action { background: var(--viola-main); color: white; flex: 1; font-size: 0.85rem;}
 
         .admin-trigger { text-align: center; margin-bottom: 50px; }
+
+        /* Stili per la modale di ingrandimento */
+        #lightbox {
+            display: none; position: fixed; z-index: 2000; top: 0; left: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);
+            justify-content: center; align-items: center;
+        }
+        #lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        #lightbox-close {
+            position: absolute; top: 20px; right: 40px; color: white;
+            font-size: 50px; cursor: pointer; font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -83,21 +105,34 @@
 
     <div style="text-align: center; margin-top: 50px;">
         <h1 style="font-family:'Indie Flower'; font-size: 3.5rem;">Opere del Concorso</h1>
-        <p>Queste sono le opere degli studenti che hanno partecipato. Sapevi che... anche questo sito è un opera del concorso fatto dagli studenti?.</p>
+        <p>Queste sono le opere degli studenti che hanno partecipato. Sapevi che... anche questo sito è un'opera del concorso fatto dagli studenti?</p>
     </div>
 
     <div id="adminPanel">
-        <h2 style="margin-top:0; color:var(--accent);">Pubblica Nuova Opera</h2>
+        <h2 id="adminTitle" style="margin-top:0; color:var(--accent);">Pubblica Nuova Opera</h2>
+        <input type="hidden" id="editId">
         <input type="text" id="titolo" placeholder="Titolo opera">
         <input type="text" id="linkImg" placeholder="Link URL Immagine">
         <textarea id="desc" rows="3" placeholder="Descrizione..."></textarea>
-        <button class="btn btn-pubblica" onclick="uploadWork()">PUBBLICA SUL WEB</button>
+        
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="allowEnlarge" checked> Consenti Ingrandimento</label>
+            <label><input type="checkbox" id="allowDownload" checked> Consenti Download</label>
+        </div>
+
+        <button class="btn btn-pubblica" id="submitBtn" onclick="saveWork()">PUBBLICA SUL WEB</button>
+        <button class="btn btn-cancel" id="cancelBtn" onclick="resetForm()">ANNULLA MODIFICA</button>
     </div>
 
     <div class="portfolio-grid" id="grid"></div>
 
     <div class="admin-trigger">
-        <button class="btn" onclick="loginAdmin()" style="background:rgba(255,255,255,0.1); color:white;">Accedi al Gestionale</button>
+        <button class="btn" id="loginBtn" onclick="toggleAdmin()" style="background:rgba(255,255,255,0.1); color:white;">Accedi al Gestionale</button>
+    </div>
+
+    <div id="lightbox" onclick="closeLightbox(event)">
+        <span id="lightbox-close" onclick="closeLightbox(event)">&times;</span>
+        <img id="lightbox-img" src="" alt="Opera Ingrandita">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -122,9 +157,10 @@
 
         let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
-        // Mostra il pannello se si è già loggati
+        // Aggiorna interfaccia base se loggati
         if (isAdmin) {
             document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('loginBtn').innerText = 'Chiudi Gestionale';
         }
 
         // Legge i dati dal database in tempo reale
@@ -136,13 +172,42 @@
             if (data) {
                 Object.keys(data).forEach(id => {
                     const item = data[id];
+                    // Se non ci sono flag salvati, li impostiamo di default a true
+                    const canEnlarge = item.allowEnlarge !== false; 
+                    const canDownload = item.allowDownload !== false;
+
+                    // Creazione Bottoni Utente (Ingrandisci / Scarica)
+                    let userButtons = '';
+                    if (canEnlarge) {
+                        userButtons += `<button class="btn btn-user-action" onclick="openLightbox('${item.img}')">🔍 Ingrandisci</button>`;
+                    }
+                    if (canDownload) {
+                        userButtons += `<a href="${item.img}" download="${item.title}" target="_blank" class="btn btn-user-action">⬇️ Scarica</a>`;
+                    }
+
+                    // Creazione Bottoni Admin (Modifica / Rimuovi)
+                    let adminButtons = '';
+                    if (isAdmin) {
+                        adminButtons = `
+                            <hr style="border-color:var(--glass-border); margin: 15px 0; width: 100%;">
+                            <div style="display:flex; gap:10px; width:100%;">
+                                <button class="btn btn-edit" onclick="editWork('${id}')">✏️ Modifica</button>
+                                <button class="btn btn-delete" onclick="deleteWork('${id}')">🗑️ Rimuovi</button>
+                            </div>
+                        `;
+                    }
+
                     grid.innerHTML += `
                         <div class="work-card">
                             <img src="${item.img}" class="work-img" onerror="this.src='https://via.placeholder.com/400x300?text=Immagine+non+valida'">
                             <div class="work-info">
                                 <h3 style="margin:0; font-family:'Indie Flower'; font-size:1.8rem;">${item.title}</h3>
-                                <p>${item.desc}</p>
-                                ${isAdmin ? `<button class="btn btn-delete" onclick="deleteWork('${id}')">Rimuovi</button>` : ''}
+                                <p style="margin-bottom:0;">${item.desc}</p>
+                                
+                                <div class="actions-container">
+                                    ${userButtons}
+                                    ${adminButtons}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -150,51 +215,112 @@
             }
         });
 
-        // Funzione Login
-        function loginAdmin() {
+        // Funzione Accedi / Chiudi Gestionale
+        function toggleAdmin() {
             if (!isAdmin) {
                 const pass = prompt("Password Gestionale:");
                 if (pass === "26viola20uni") {
-                    isAdmin = true;
                     sessionStorage.setItem('isAdmin', 'true');
-                    document.getElementById('adminPanel').style.display = 'block';
                     location.reload(); 
-                } else {
+                } else if (pass !== null) {
                     alert("Password errata!");
                 }
             } else {
-                isAdmin = false;
                 sessionStorage.removeItem('isAdmin');
                 location.reload();
             }
         }
 
-        // Funzione Pubblica
-        function uploadWork() {
+        // Funzione Salva (Crea o Aggiorna)
+        function saveWork() {
+            const id = document.getElementById('editId').value;
             const title = document.getElementById('titolo').value;
             const img = document.getElementById('linkImg').value;
             const desc = document.getElementById('desc').value;
+            const allowEnlarge = document.getElementById('allowEnlarge').checked;
+            const allowDownload = document.getElementById('allowDownload').checked;
 
             if (title && img) {
-                worksRef.push({ title: title, img: img, desc: desc })
-                    .then(() => {
-                        alert("Pubblicato sul Web con successo!");
-                        document.getElementById('titolo').value = '';
-                        document.getElementById('linkImg').value = '';
-                        document.getElementById('desc').value = '';
-                    })
-                    .catch((error) => {
-                        alert("Errore durante la pubblicazione: " + error.message);
-                    });
+                const workData = { title, img, desc, allowEnlarge, allowDownload };
+
+                if (id) {
+                    // Aggiorna l'opera esistente
+                    db.ref('opere/' + id).update(workData)
+                        .then(() => {
+                            alert("Opera modificata con successo!");
+                            resetForm();
+                        })
+                        .catch((error) => alert("Errore: " + error.message));
+                } else {
+                    // Crea nuova opera
+                    worksRef.push(workData)
+                        .then(() => {
+                            alert("Pubblicato sul Web con successo!");
+                            resetForm();
+                        })
+                        .catch((error) => alert("Errore: " + error.message));
+                }
             } else {
                 alert("Titolo e Immagine sono obbligatori!");
             }
         }
 
+        // Funzione per caricare i dati nel form per la modifica
+        function editWork(id) {
+            worksRef.child(id).once('value', snapshot => {
+                const data = snapshot.val();
+                if(data) {
+                    document.getElementById('editId').value = id;
+                    document.getElementById('titolo').value = data.title;
+                    document.getElementById('linkImg').value = data.img;
+                    document.getElementById('desc').value = data.desc;
+                    document.getElementById('allowEnlarge').checked = data.allowEnlarge !== false;
+                    document.getElementById('allowDownload').checked = data.allowDownload !== false;
+                    
+                    document.getElementById('adminTitle').innerText = "Modifica Opera";
+                    document.getElementById('submitBtn').innerText = "SALVA MODIFICHE";
+                    document.getElementById('cancelBtn').style.display = "block";
+
+                    // Scorre in alto per mostrare il pannello
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        // Ripristina il form allo stato originale
+        function resetForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('titolo').value = '';
+            document.getElementById('linkImg').value = '';
+            document.getElementById('desc').value = '';
+            document.getElementById('allowEnlarge').checked = true;
+            document.getElementById('allowDownload').checked = true;
+            
+            document.getElementById('adminTitle').innerText = "Pubblica Nuova Opera";
+            document.getElementById('submitBtn').innerText = "PUBBLICA SUL WEB";
+            document.getElementById('cancelBtn').style.display = "none";
+        }
+
         // Funzione Elimina
         function deleteWork(id) {
-            if (confirm("Sei sicuro di voler eliminare l'opera dal server?")) {
+            if (confirm("Sei sicuro di voler eliminare definitivamente quest'opera?")) {
                 db.ref('opere/' + id).remove();
+            }
+        }
+
+        // Funzioni Lightbox (Ingrandimento Immagine)
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox(event) {
+            // Chiudi solo se l'utente clicca sullo sfondo scuro o sulla X
+            if (event.target.id === 'lightbox' || event.target.id === 'lightbox-close') {
+                document.getElementById('lightbox').style.display = 'none';
+                document.getElementById('lightbox-img').src = '';
             }
         }
     </script>
