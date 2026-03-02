@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Opere - Uni Viola</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --viola-main: #8A2BE2;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent: #d8b4fe;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px; width: 90%; max-width: 1200px; margin: 40px auto;
+        }
+
+        .work-card {
+            background: var(--glass-bg); backdrop-filter: blur(10px);
+            border-radius: 20px; border: 1px solid var(--glass-border);
+            overflow: hidden; transition: 0.3s; position: relative;
+        }
+
+        .work-img { width: 100%; height: 220px; object-fit: cover; }
+        .work-info { padding: 20px; }
+
+        #adminPanel {
+            background: rgba(0,0,0,0.7); padding: 30px; border-radius: 20px;
+            width: 85%; max-width: 500px; margin: 20px auto;
+            display: none; border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        input, textarea {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
+            color: white; border-radius: 10px; box-sizing: border-box;
+        }
+
+        .btn { padding: 12px 25px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-pubblica { background: #1DB954; color: white; width: 100%; margin-top: 10px; }
+        .btn-delete { background: #ff4d4d; color: white; margin-top: 10px; font-size: 0.8rem; }
+
+        .admin-trigger { text-align: center; margin-bottom: 50px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" style="font-family:'Indie Flower'; color:white; text-decoration:none; font-size:1.8rem;">UniViola</a>
+    </nav>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <h1 style="font-family:'Indie Flower'; font-size: 3.5rem;">Gestionale Opere</h1>
+        <p>Tutto quello che pubblichi qui sarà visibile a chiunque visiti il sito.</p>
+    </div>
+
+    <div id="adminPanel">
+        <h2 style="margin-top:0; color:var(--accent);">Pubblica Nuova Opera</h2>
+        <input type="text" id="titolo" placeholder="Titolo opera">
+        <input type="text" id="linkImg" placeholder="Link URL Immagine">
+        <textarea id="desc" rows="3" placeholder="Descrizione..."></textarea>
+        <button class="btn btn-pubblica" onclick="uploadWork()">PUBBLICA SUL WEB</button>
+    </div>
+
+    <div class="portfolio-grid" id="grid"></div>
+
+    <div class="admin-trigger">
+        <button class="btn" onclick="loginAdmin()" style="background:rgba(255,255,255,0.1); color:white;">Accedi al Gestionale</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Le tue chiavi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5232bpf2y4pKwBq2_lEICUU6wPnVnEeg",
+            authDomain: "univiola-ee9b2.firebaseapp.com",
+            databaseURL: "https://univiola-ee9b2-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "univiola-ee9b2",
+            storageBucket: "univiola-ee9b2.firebasestorage.app",
+            messagingSenderId: "540543531950",
+            appId: "1:540543531950:web:00e3e03c69eb74af8aa63f"
+        };
+
+        // Inizializza Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const worksRef = db.ref('opere');
+
+        let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+
+        // Mostra il pannello se si è già loggati
+        if (isAdmin) {
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        // Legge i dati dal database in tempo reale
+        worksRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            
+            if (data) {
+                Object.keys(data).forEach(id => {
+                    const item = data[id];
+                    grid.innerHTML += `
+                        <div class="work-card">
+                            <img src="${item.img}" class="work-img" onerror="this.src='https://via.placeholder.com/400x300?text=Immagine+non+valida'">
+                            <div class="work-info">
+                                <h3 style="margin:0; font-family:'Indie Flower'; font-size:1.8rem;">${item.title}</h3>
+                                <p>${item.desc}</p>
+                                ${isAdmin ? `<button class="btn btn-delete" onclick="deleteWork('${id}')">Rimuovi</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        // Funzione Login
+        function loginAdmin() {
+            if (!isAdmin) {
+                const pass = prompt("Password Gestionale:");
+                if (pass === "viola2024") {
+                    isAdmin = true;
+                    sessionStorage.setItem('isAdmin', 'true');
+                    document.getElementById('adminPanel').style.display = 'block';
+                    location.reload(); 
+                } else {
+                    alert("Password errata!");
+                }
+            } else {
+                isAdmin = false;
+                sessionStorage.removeItem('isAdmin');
+                location.reload();
+            }
+        }
+
+        // Funzione Pubblica
+        function uploadWork() {
+            const title = document.getElementById('titolo').value;
+            const img = document.getElementById('linkImg').value;
+            const desc = document.getElementById('desc').value;
+
+            if (title && img) {
+                worksRef.push({ title: title, img: img, desc: desc })
+                    .then(() => {
+                        alert("Pubblicato sul Web con successo!");
+                        document.getElementById('titolo').value = '';
+                        document.getElementById('linkImg').value = '';
+                        document.getElementById('desc').value = '';
+                    })
+                    .catch((error) => {
+                        alert("Errore durante la pubblicazione: " + error.message);
+                    });
+            } else {
+                alert("Titolo e Immagine sono obbligatori!");
+            }
+        }
+
+        // Funzione Elimina
+        function deleteWork(id) {
+            if (confirm("Sei sicuro di voler eliminare l'opera dal server?")) {
+                db.ref('opere/' + id).remove();
+            }
+        }
+    </script>
+</body>
+</html>
