@@ -35,7 +35,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NAVBAR */
+        /* NAVBAR AGGIORNATA */
         .navbar {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
@@ -44,75 +44,77 @@
         }
 
         .nav-container { width: 90%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo-link { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .nav-logo-link { display: flex; align-items: center; text-decoration: none; gap: 12px; z-index: 1001; }
         .nav-logo-img { height: 45px; width: auto; }
         .nav-logo-text { font-family: 'Indie Flower', cursive; font-size: 1.6rem; font-weight: 800; color: white; }
 
-        .nav-menu { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; }
-        .nav-menu a { text-decoration: none; color: white; font-size: 0.85rem; text-transform: uppercase; }
+        .nav-menu { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; transition: 0.4s ease; }
+        .nav-menu a { text-decoration: none; color: white; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-menu a:hover { color: #d8b4fe; }
 
-        /* --- CONFIGURAZIONE SCUDO COOKIE (RE-OPEN BUTTON) --- */
-        #cc-main {
-            --cc-bg: rgba(219, 153, 255, 0.98);
-            --cc-btn-primary-bg: var(--viola-main);
-            --cc-btn-primary-hover-bg: #9d4edd;
+        /* HAMBURGER */
+        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1001; }
+        .hamburger span { width: 30px; height: 3px; background: white; border-radius: 5px; transition: 0.3s; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-menu {
+                position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+                background: rgba(0, 0, 0, 0.95); flex-direction: column;
+                justify-content: center; align-items: center; gap: 40px;
+                backdrop-filter: blur(15px);
+            }
+            .nav-menu.active { right: 0; }
+            .nav-menu a { font-size: 1.5rem; }
+            
+            /* Animazione X */
+            .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
 
-        /* Forza lo scudo ad essere visibile dal primissimo avvio */
-        #cc-main .cc__floating-btn {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            background: var(--viola-main) !important;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.6) !important;
-            left: 20px !important; 
-            bottom: 20px !important;
-            width: 50px !important;
-            height: 50px !important;
-            border-radius: 50% !important;
-            z-index: 2000 !important;
-            cursor: pointer;
-        }
-
-        /* PANNELLO CENTRALE */
+        /* --- RESTO DEGLI STILI --- */
+        #cc-main { --cc-bg: rgba(219, 153, 255, 0.98); --cc-btn-primary-bg: var(--viola-main); --cc-btn-primary-hover-bg: #9d4edd; }
         .glass-panel {
             background: var(--glass-bg); backdrop-filter: blur(16px);
             border-radius: 30px; border: 1px solid var(--glass-border);
             width: 90%; max-width: 900px; margin: 30px auto; padding: 50px; text-align: center;
         }
-
         .logos-container { display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 30px; flex-wrap: wrap; }
         .logo-box { background: rgba(255, 255, 255, 0.85); border-radius: 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .logo-box img { max-height: 80px; width: auto; }
         .logo-main { padding: 20px; background: white; }
         .logo-main img { max-height: 129px; }
-
         h1 { font-family: 'Indie Flower', cursive; font-size: 4rem; margin: 10px 0; }
-
         .info-text {
             font-size: 1.1rem; font-weight: 300; line-height: 1.8; margin: 30px auto; max-width: 750px;
             text-align: justify; text-align-last: center; background: rgba(0,0,0,0.2);
             padding: 25px; border-radius: 20px;
         }
-
-        /* VIDEO SECTION */
         .video-section { margin: 40px 0; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .video-title { margin-bottom: 20px; font-weight: 600; font-size: 1.2rem; }
         .video-wrapper {
             position: relative; width: 100%; max-width: 700px; padding-bottom: 56.25%; height: 0;
             border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(138, 43, 226, 0.4);
             border: 1px solid var(--glass-border); background: #000;
         }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
         .btn-spotify {
             background-color: var(--spotify-green); color: white; text-decoration: none;
             font-weight: 600; padding: 15px 40px; border-radius: 50px;
             display: inline-flex; align-items: center; gap: 12px; margin-top: 30px;
         }
         .btn-spotify svg { width: 28px; height: 28px; fill: white; }
-
         footer { margin-top: auto; width: 100%; text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.3); font-size: 0.85rem; }
+        
+        .cookie-shield {
+            position: fixed; bottom: 25px; left: 25px; width: 50px; height: 50px;
+            background-color: var(--viola-main); border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; z-index: 9999; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .cookie-shield:hover { transform: scale(1.1); background-color: #9d4edd; }
+        .cookie-shield svg { width: 24px; height: 24px; fill: white; }
     </style>
 </head>
 <body>
@@ -123,6 +125,13 @@
                 <img src="/media/UniviolaLogoFull.png" alt="Logo Uni Viola" class="nav-logo-img">
                 <span class="nav-logo-text">UniViola</span>
             </a>
+            
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
             <ul class="nav-menu">
                 <li><a href="progetto.html">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
@@ -143,16 +152,12 @@
 
         <div class="info-text">
             <strong>Dall’ombra alla luce: una rotta condivisa verso la gentilezza.</strong><br><br>
-            <strong>THE VIOLET BENCH</strong> non è solo un progetto, è un avamposto digitale contro il bullismo e il cyberbullismo. Ispirato alla solidità della <em>Panchina Viola</em> e guidato dalla filosofia <em>Human-Tech</em>, questo sito fonde narrazione, immagini e un ritmo solenne per dare voce a chi è rimasto in silenzio troppo a lungo.<br><br>
-            In un’epoca di connessioni costanti ma spesso fredde, ci poniamo come una rotta di intercettazione per chiunque stia navigando in acque agitate. Attraverso le nostre storie, costruiamo una rete di supporto che trasforma le fragilità in scudi. <strong>Perché insieme, siamo più forti di ogni ombra.</strong>
+            <strong>THE VIOLET BENCH</strong> non è solo un progetto, è un avamposto digitale contro il bullismo e il cyberbullismo. Ispirato alla solidità della <em>Panchina Viola</em> e guidato dalla filosofia <em>Human-Tech</em>, questo sito fonde narrazione, immagini e un ritmo solenne per dare voce a chi è rimasto in silenzio troppo a lungo.
         </div>
 
         <div class="video-section">
-            <div class="video-title">IL NOSTRO MESSAGGIO: THE VIOLET BENCH</div>
             <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/z2Yg3VFzDDQ?rel=0&modestbranding=1" 
-                        title="Uni Viola - The Violet Bench" allowfullscreen>
-                </iframe>
+                <iframe src="https://www.youtube.com/embed/z2Yg3VFzDDQ?rel=0&modestbranding=1" title="Uni Viola" allowfullscreen></iframe>
             </div>
         </div>
 
@@ -164,85 +169,22 @@
 
     <footer>Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"</footer>
 
-    <script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.umd.js"></script>
+    <button type="button" class="cookie-shield" onclick="CookieConsent.showPreferences()"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></button>
+
     <script>
-        CookieConsent.run({
-    guiOptions: {
-        consentModal: { layout: "box", position: "bottom right" }
-    },
-    // Forza il salvataggio persistente
-    cookie: {
-        name: "cc_cookie",
-        expiresAfterDays: 365,
-        path: "/"
-    },
-    categories: {
-        necessary: { enabled: true },
-        analytics: {}
-    },
-    language: {
-        default: "it",
-        translations: {
-            it: {
-                consentModal: {
-                    title: "✨ Insieme per la gentilezza",
-                    description: "Usa lo scudo in basso a sinistra per cambiare le tue preferenze in ogni momento.",
-                    acceptAllBtn: "Accetta tutti",
-                    acceptNecessaryBtn: "Solo necessari",
-                    showPreferencesBtn: "Gestisci"
-                },
-                preferencesModal: {
-                    title: "Pannello Cookie",
-                    acceptAllBtn: "Accetta tutti",
-                    acceptNecessaryBtn: "Rifiuta opzionali",
-                    savePreferencesBtn: "Salva scelte",
-                    sections: [
-                        { title: "Cookie Tecnici", description: "Indispensabili, forniscono il supporto primario, disattivarli potrebbe alterare le funzionalità del sito.", linkedCategory: "necessary" },
-                        { title: "Analisi", description: "Utilizzati da UniViola per analizzare l'esperienza degli utenti e migliorare il sito.", linkedCategory: "analytics" }
-                    ]
-                }
-            }
-        }
-    }
-});
+        const hamburger = document.querySelector(".hamburger");
+        const navMenu = document.querySelector(".nav-menu");
+
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navMenu.classList.toggle("active");
+        });
+
+        // Chiudi menu quando clicchi un link
+        document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
+            hamburger.classList.remove("active");
+            navMenu.classList.remove("active");
+        }));
     </script>
-    <button type="button" class="cookie-shield" onclick="CookieConsent.showPreferences()" aria-label="Gestisci Cookie">
-    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-</button>
-
-<style>
-/* CSS PER LO SCUDO PERSISTENTE */
-.cookie-shield {
-    position: fixed;
-    bottom: 25px;
-    left: 25px;
-    width: 50px;
-    height: 50px;
-    background-color: var(--viola-main);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 9999; /* Sopra ogni cosa */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.cookie-shield:hover {
-    transform: scale(1.1);
-    background-color: #9d4edd;
-}
-
-.cookie-shield svg {
-    width: 24px;
-    height: 24px;
-    fill: white;
-}
-
-/* Nascondiamo il tasto originale del plugin che crea conflitti */
-.cc__floating-btn { display: none !important; }
-</style>
 </body>
 </html>
