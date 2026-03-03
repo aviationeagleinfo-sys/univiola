@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Progetto - Uni Viola</title>
+    
+    <link rel="icon" type="image/x-icon" href="/media/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --viola-main: #8A2BE2;
+            --viola-dark: #4B0082;
+            --viola-light: #d8b4fe;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        /* Sfondo animato (Ereditato dalla home) */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px; /* Spazio per la navbar fissa */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* NAVIGATION BAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--viola-light);
+        }
+
+        /* LAYOUT PROGETTO */
+        .project-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .page-title {
+            font-family: 'Indie Flower', cursive;
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* GRIGLIA RESPONSIVA */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Stile base dei riquadri (Glassmorphism) */
+        .box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            padding: 35px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+
+        /* Classi di utilità per l'impaginazione */
+        .full-width {
+            grid-column: 1 / -1; /* Occupa tutta la larghezza disponibile */
+        }
+
+        .span-2 {
+            grid-column: span 2; /* Occupa due colonne se lo schermo è grande */
+        }
+
+        /* STILI DI SCRITTURA (Tipografia) */
+        .box-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--viola-light);
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Stile 1: Paragrafo Standard */
+        .text-standard {
+            font-size: 1.05rem;
+            font-weight: 300;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* Stile 2: Testo d'impatto (Lead) */
+        .text-lead {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.6;
+            color: white;
+            text-align: center;
+        }
+
+        /* Stile 3: Citazione Evidenziata */
+        .text-quote {
+            font-family: 'Indie Flower', cursive;
+            font-size: 2rem;
+            line-height: 1.4;
+            text-align: center;
+            color: var(--viola-light);
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 5px solid var(--viola-light);
+            border-right: 5px solid var(--viola-light);
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        /* Stile 4: Lista puntata personalizzata */
+        .custom-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .custom-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .custom-list li::before {
+            content: "✦";
+            color: var(--viola-light);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive adjustments for specific span classes */
+        @media (max-width: 768px) {
+            .span-2 {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-sizing: border-box;
+        }
+/*class="box full-width": Il riquadro prenderà tutto lo spazio orizzontale (ottimo per intro e citazioni).
+
+class="box span-2": Il riquadro prenderà due "colonne" (utile per testi più lunghi).
+
+class="box": Il riquadro prenderà una colonna base (ottimo per elenchi o brevi paragrafi).
+
+class="text-lead": Per i testi iniziali importanti (più grandi, in grassetto, centrati).
+
+class="text-standard": Per i normali paragrafi da leggere.
+
+class="text-quote": Usa il font Indie Flower per le citazioni ad effetto.
+
+class="custom-list": Da applicare ai tag <ul> per avere l'elenco puntato con i simboli personalizzati (✦). */
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">UniViola</a>
+            <ul class="nav-menu">
+                <li><a href="#" class="active">Il Progetto</a></li>
+                <li><a href="#">Podcast</a></li>
+                <li><a href="mappa-gentilezza.html">Mappa gentilezza</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="project-wrapper">
+        <h1 class="page-title">Dietro le Quinte</h1>
+
+        <div class="project-grid">
+            
+            <div class="box full-width">
+                <p class="text-lead">
+                    [TITOLO INTRODUTTIVO QUI] <br>
+                    Qui inserirete la vostra dichiarazione di intenti principale. Un testo breve, forte e che catturi subito l'attenzione di chi legge.
+                </p>
+            </div>
+
+            <div class="box">
+                <h2 class="box-title">Come è nato</h2>
+                <p class="text-standard">
+                    [TESTO STANDARD] Questo è lo stile per i paragrafi descrittivi. Potete raccontare la genesi del progetto The Violet Bench. Utilizzate questo spazio per spiegare il contesto, l'ispirazione e i primi passi che avete compiuto. Il testo è giustificato e ha un'interlinea ampia per facilitare la lettura.
+                </p>
+            </div>
+
+            <div class="box">
+                <h2 class="box-title">I Nostri Obiettivi</h2>
+                <ul class="custom-list">
+                    <li>[OBIETTIVO 1] Creare consapevolezza sul tema...</li>
+                    <li>[OBIETTIVO 2] Fornire strumenti pratici per...</li>
+                    <li>[OBIETTIVO 3] Costruire una rete di supporto tramite...</li>
+                </ul>
+            </div>
+
+            <div class="box full-width">
+                <div class="text-quote">
+                    "Inserite qui una citazione potente. Magari una frase detta durante la progettazione, o il motto che vi ha guidato in questo percorso contro il bullismo."
+                </div>
+            </div>
+
+            <div class="box span-2">
+                <h2 class="box-title">La Filosofia Human-Tech</h2>
+                <p class="text-standard">
+                    [TESTO STANDARD] Qui potete approfondire la fusione tra tecnologia e lato umano, un concetto centrale che avete menzionato nella home page. Questo box occupa più spazio orizzontale su schermi medi e grandi, rendendolo perfetto per una spiegazione più dettagliata e strutturata.
+                </p>
+            </div>
+
+            <div class="box">
+                <h2 class="box-title">Unisciti a noi</h2>
+                <p class="text-standard">
+                    [TESTO STANDARD] Spiegate come gli utenti, le scuole o i ragazzi possono partecipare attivamente. Lasciate uno spazio per un futuro bottone o un link ai vostri canali social.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br><br>
+    </footer>
+
+</body>
+
+</html>
