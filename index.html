@@ -12,6 +12,14 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.css">
 
+    <script type="text/plain" data-category="analytics" src="https://www.googletagmanager.com/gtag/js?id=G-BM6GLVB3SR"></script>
+    <script type="text/plain" data-category="analytics">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BM6GLVB3SR');
+    </script>
+
     <style>
         :root {
             --viola-main: #8A2BE2;
@@ -44,7 +52,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NAVIGATION BAR */
         .navbar {
             position: fixed;
             top: 0;
@@ -94,11 +101,8 @@
             transition: color 0.3s ease;
         }
 
-        .nav-menu a:hover {
-            color: #d8b4fe;
-        }
+        .nav-menu a:hover { color: #d8b4fe; }
 
-        /* Contenitore Principale Liquid Glass */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -113,7 +117,6 @@
             text-align: center;
         }
 
-        /* Sezione Loghi */
         .logos-container {
             display: flex;
             justify-content: center;
@@ -157,12 +160,8 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .info-text strong {
-            color: #d8b4fe;
-            font-weight: 600;
-        }
+        .info-text strong { color: #d8b4fe; font-weight: 600; }
 
-        /* Video Section */
         .video-section {
             margin: 40px 0;
             width: 100%;
@@ -201,7 +200,6 @@
             border: 0;
         }
 
-        /* Tasto Spotify */
         .btn-spotify {
             background-color: var(--spotify-green);
             color: white;
@@ -224,13 +222,8 @@
             box-shadow: 0 15px 25px rgba(29, 185, 84, 0.5);
         }
 
-        .btn-spotify svg {
-            width: 28px;
-            height: 28px;
-            fill: white;
-        }
+        .btn-spotify svg { width: 28px; height: 28px; fill: white; }
 
-        /* Footer */
         footer {
             margin-top: auto;
             width: 100%;
@@ -241,30 +234,7 @@
             font-size: 0.85rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-
-        footer a {
-            color: #d8b4fe;
-            font-weight: 600;
-            text-decoration: none;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.css">
-
-    <script type="text/plain" data-category="analytics" src="https://www.googletagmanager.com/gtag/js?id=G-BM6GLVB3SR"></script>
-    <script type="text/plain" data-category="analytics">
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BM6GLVB3SR');
-    </script>
-
 </head>
 <body>
 
@@ -281,16 +251,13 @@
     </nav>
 
     <main class="glass-panel">
-        
         <div class="logos-container">
             <div class="logo-box">
                 <img src="/media/Citta-di-Cuneo-Logo.png" alt="Città di Cuneo">
             </div>
-
             <div class="logo-box logo-main">
                 <img src="/media/favicon.png" alt="Logo Uni Viola">
             </div>
-
             <div class="logo-box">
                 <img src="/media/IC-BSG-LOGO.png" alt="Logo Scuola">
             </div>
@@ -306,7 +273,6 @@
 
         <div class="video-section">
             <div class="video-title">IL NOSTRO MESSAGGIO: THE VIOLET BENCH</div>
-            
             <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/z2Yg3VFzDDQ?rel=0&modestbranding=1" 
                         title="Uni Viola - The Violet Bench" 
@@ -322,11 +288,10 @@
             </svg>
             SEGUICI SU SPOTIFY
         </a>
-
     </main>
 
     <footer>
-        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br><br>
+        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"
     </footer>
 
     <script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.umd.js"></script>
@@ -349,7 +314,7 @@
                     it: {
                         consentModal: {
                             title: "Insieme per la gentilezza",
-                            description: "Uni Viola utilizza i cookie per migliorare la tua esperienza di navigazione e analizzare come le nostre risorse contro il bullismo vengono utilizzate.",
+                            description: "Uni Viola utilizza i cookie per analizzare come le nostre risorse contro il bullismo vengono utilizzate.",
                             acceptAllBtn: "Accetta tutti",
                             acceptNecessaryBtn: "Solo necessari",
                             showPreferencesBtn: "Gestisci scelte"
