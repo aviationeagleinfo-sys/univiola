@@ -10,6 +10,8 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.css">
+
     <style>
         :root {
             --viola-main: #8A2BE2;
@@ -33,7 +35,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 80px; /* Spazio per la navbar fissa */
+            padding-top: 80px; 
         }
 
         @keyframes gradientBG {
@@ -253,6 +255,16 @@
             text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.css">
+
+    <script type="text/plain" data-category="analytics" src="https://www.googletagmanager.com/gtag/js?id=G-BM6GLVB3SR"></script>
+    <script type="text/plain" data-category="analytics">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BM6GLVB3SR');
+    </script>
+
 </head>
 <body>
 
@@ -260,7 +272,6 @@
         <div class="nav-container">
             <a href="#" class="nav-logo">UniViola</a>
             <ul class="nav-menu">
-                
                 <li><a href="progetto.html">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
                 <li><a href="mappa-gentilezza.html">Mappa gentilezza</a></li>
@@ -316,8 +327,56 @@
 
     <footer>
         Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br><br>
-        
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.umd.js"></script>
+    <script>
+        CookieConsent.run({
+            guiOptions: {
+                consentModal: {
+                    layout: "box",
+                    position: "bottom right",
+                    equalWeightButtons: true
+                }
+            },
+            categories: {
+                necessary: { enabled: true },
+                analytics: {}
+            },
+            language: {
+                default: "it",
+                translations: {
+                    it: {
+                        consentModal: {
+                            title: "Insieme per la gentilezza",
+                            description: "Uni Viola utilizza i cookie per migliorare la tua esperienza di navigazione e analizzare come le nostre risorse contro il bullismo vengono utilizzate.",
+                            acceptAllBtn: "Accetta tutti",
+                            acceptNecessaryBtn: "Solo necessari",
+                            showPreferencesBtn: "Gestisci scelte"
+                        },
+                        preferencesModal: {
+                            title: "Preferenze Privacy",
+                            closeIconLabel: "Chiudi",
+                            acceptAllBtn: "Accetta tutti",
+                            acceptNecessaryBtn: "Rifiuta opzionali",
+                            savePreferencesBtn: "Salva impostazioni",
+                            sections: [
+                                {
+                                    title: "Cookie Tecnici",
+                                    description: "Indispensabili per il funzionamento sicuro del sito.",
+                                    linkedCategory: "necessary"
+                                },
+                                {
+                                    title: "Analisi",
+                                    description: "Ci aiutano a capire quali contenuti sono più utili per la nostra missione.",
+                                    linkedCategory: "analytics"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
