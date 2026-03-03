@@ -65,7 +65,12 @@
             justify-content: space-between;
             align-items: center;
         }
-
+.nav-logo-text {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
         .nav-logo {
             font-family: 'Indie Flower', cursive;
             font-size: 1.5rem;
@@ -73,7 +78,20 @@
             text-decoration: none;
             color: white;
         }
+.nav-logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
 
+        .nav-logo-link:hover { transform: scale(1.05); }
+
+        .nav-logo-img {
+            height: 45px;
+            width: auto;
+        }
         .nav-menu {
             display: flex;
             gap: 25px;
@@ -253,11 +271,14 @@ class="custom-list": Da applicare ai tag <ul> per avere l'elenco puntato con i s
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">UniViola</a>
+            <a href="index.html" class="nav-logo-link">
+                <img src="/media/UniviolaLogoFull.png" alt="Logo Uni Viola" class="nav-logo-img">
+                <span class="nav-logo-text">UniViola</span>
+            </a>
             <ul class="nav-menu">
-                <li><a href="#" class="active">Il Progetto</a></li>
+                <li><a href="progetto.html">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
-                <li><a href="mappa-gentilezza.html">Mappa gentilezza</a></li>
+                <li><a href="mappa-gentilezza.html">Mappa</a></li>
                 <li><a href="portfolio.html">Portfolio</a></li>
             </ul>
         </div>
