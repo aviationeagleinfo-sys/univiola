@@ -20,7 +20,6 @@
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
         }
 
-        /* Sfondo animato (Ereditato dalla home) */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -33,7 +32,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 100px; /* Spazio per la navbar fissa */
+            padding-top: 100px; 
         }
 
         @keyframes gradientBG {
@@ -42,7 +41,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NAVIGATION BAR */
+        /* NAVBAR & NAVIGATION */
         .navbar {
             position: fixed;
             top: 0;
@@ -65,20 +64,8 @@
             justify-content: space-between;
             align-items: center;
         }
-.nav-logo-text {
-            font-family: 'Indie Flower', cursive;
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: white;
-        }
-        .nav-logo {
-            font-family: 'Indie Flower', cursive;
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-decoration: none;
-            color: white;
-        }
-.nav-logo-link {
+
+        .nav-logo-link {
             display: flex;
             align-items: center;
             text-decoration: none;
@@ -86,12 +73,15 @@
             transition: transform 0.3s ease;
         }
 
-        .nav-logo-link:hover { transform: scale(1.05); }
+        .nav-logo-img { height: 45px; width: auto; }
 
-        .nav-logo-img {
-            height: 45px;
-            width: auto;
+        .nav-logo-text {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
         }
+
         .nav-menu {
             display: flex;
             gap: 25px;
@@ -110,8 +100,25 @@
             transition: color 0.3s ease;
         }
 
-        .nav-menu a:hover, .nav-menu a.active {
-            color: var(--viola-light);
+        .nav-menu a:hover, .nav-menu a.active { color: var(--viola-light); }
+
+        /* HAMBURGER MENU FIX */
+        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1100; }
+        .hamburger span { width: 30px; height: 3px; background: white; border-radius: 5px; transition: 0.3s; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-menu {
+                position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+                background: rgba(0, 0, 0, 0.95); flex-direction: column;
+                justify-content: center; align-items: center; gap: 40px;
+                backdrop-filter: blur(15px); transition: 0.4s; z-index: 1050;
+            }
+            .nav-menu.active { right: 0; }
+            .nav-menu a { font-size: 1.5rem !important; }
+            .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
 
         /* LAYOUT PROGETTO */
@@ -132,14 +139,12 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* GRIGLIA RESPONSIVA */
         .project-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
 
-        /* Stile base dei riquadri (Glassmorphism) */
         .box {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -156,16 +161,9 @@
             box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
         }
 
-        /* Classi di utilità per l'impaginazione */
-        .full-width {
-            grid-column: 1 / -1; /* Occupa tutta la larghezza disponibile */
-        }
+        .full-width { grid-column: 1 / -1; }
+        .span-2 { grid-column: span 2; }
 
-        .span-2 {
-            grid-column: span 2; /* Occupa due colonne se lo schermo è grande */
-        }
-
-        /* STILI DI SCRITTURA (Tipografia) */
         .box-title {
             font-size: 1.5rem;
             font-weight: 800;
@@ -178,24 +176,9 @@
             letter-spacing: 1px;
         }
 
-        /* Stile 1: Paragrafo Standard */
-        .text-standard {
-            font-size: 1.05rem;
-            font-weight: 300;
-            line-height: 1.7;
-            text-align: justify;
-        }
+        .text-standard { font-size: 1.05rem; font-weight: 300; line-height: 1.7; text-align: justify; }
+        .text-lead { font-size: 1.25rem; font-weight: 600; line-height: 1.6; text-align: center; }
 
-        /* Stile 2: Testo d'impatto (Lead) */
-        .text-lead {
-            font-size: 1.25rem;
-            font-weight: 600;
-            line-height: 1.6;
-            color: white;
-            text-align: center;
-        }
-
-        /* Stile 3: Citazione Evidenziata */
         .text-quote {
             font-family: 'Indie Flower', cursive;
             font-size: 2rem;
@@ -210,61 +193,29 @@
             border-radius: 10px;
         }
 
-        /* Stile 4: Lista puntata personalizzata */
-        .custom-list {
-            list-style: none;
-            padding: 0;
-        }
-
+        .custom-list { list-style: none; padding: 0; }
         .custom-list li {
-            margin-bottom: 15px;
-            padding-left: 25px;
-            position: relative;
-            font-weight: 400;
-            line-height: 1.5;
+            margin-bottom: 15px; padding-left: 25px; position: relative;
+            font-weight: 400; line-height: 1.5;
         }
-
         .custom-list li::before {
-            content: "✦";
-            color: var(--viola-light);
-            position: absolute;
-            left: 0;
-            top: 0;
-            font-size: 1.2rem;
+            content: "✦"; color: var(--viola-light);
+            position: absolute; left: 0; top: 0; font-size: 1.2rem;
         }
 
-        /* Responsive adjustments for specific span classes */
-        @media (max-width: 768px) {
-            .span-2 {
-                grid-column: 1 / -1;
-            }
-        }
+        @media (max-width: 768px) { .span-2 { grid-column: 1 / -1; } }
 
-        /* Footer */
+        /* FOOTER */
         footer {
-            margin-top: auto;
             width: 100%;
             text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            font-size: 0.85rem;
+            padding: 30px;
+            background: rgba(0,0,0,0.4);
+            margin-top: 50px;
             border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
             box-sizing: border-box;
         }
-/*class="box full-width": Il riquadro prenderà tutto lo spazio orizzontale (ottimo per intro e citazioni).
-
-class="box span-2": Il riquadro prenderà due "colonne" (utile per testi più lunghi).
-
-class="box": Il riquadro prenderà una colonna base (ottimo per elenchi o brevi paragrafi).
-
-class="text-lead": Per i testi iniziali importanti (più grandi, in grassetto, centrati).
-
-class="text-standard": Per i normali paragrafi da leggere.
-
-class="text-quote": Usa il font Indie Flower per le citazioni ad effetto.
-
-class="custom-list": Da applicare ai tag <ul> per avere l'elenco puntato con i simboli personalizzati (✦). */
     </style>
 </head>
 <body>
@@ -275,8 +226,9 @@ class="custom-list": Da applicare ai tag <ul> per avere l'elenco puntato con i s
                 <img src="/media/UniviolaLogoFull.png" alt="Logo Uni Viola" class="nav-logo-img">
                 <span class="nav-logo-text">UniViola</span>
             </a>
+            <div class="hamburger"><span></span><span></span><span></span></div>
             <ul class="nav-menu">
-                <li><a href="progetto.html">Il Progetto</a></li>
+                <li><a href="progetto.html" class="active">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
                 <li><a href="mappa-gentilezza.html">Mappa</a></li>
                 <li><a href="portfolio.html">Portfolio</a></li>
@@ -336,9 +288,23 @@ class="custom-list": Da applicare ai tag <ul> per avere l'elenco puntato con i s
     </main>
 
     <footer>
-        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br><br>
+        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br>
+        © 2026 UniViola Avamposto Digitale
     </footer>
 
-</body>
+    <script>
+        document.querySelector(".hamburger").addEventListener("click", function() {
+            this.classList.toggle("active");
+            document.querySelector(".nav-menu").classList.toggle("active");
+        });
 
+        // Chiude il menu se si clicca su un link (ottimo per mobile)
+        document.querySelectorAll(".nav-menu a").forEach(link => {
+            link.addEventListener("click", () => {
+                document.querySelector(".hamburger").classList.remove("active");
+                document.querySelector(".nav-menu").classList.remove("active");
+            });
+        });
+    </script>
+</body>
 </html>
