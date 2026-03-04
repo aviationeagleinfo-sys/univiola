@@ -9,6 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
@@ -22,8 +23,7 @@
 
         body {
             font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             min-height: 100vh;
             background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
             background-size: 400% 400%;
@@ -41,68 +41,23 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NAVBAR & NAVIGATION */
+        /* NAVBAR */
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .nav-container {
-            width: 90%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            gap: 12px;
-            transition: transform 0.3s ease;
-        }
-
+        .nav-container { width: 90%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo-link { display: flex; align-items: center; text-decoration: none; gap: 12px; }
         .nav-logo-img { height: 45px; width: auto; }
+        .nav-logo-text { font-family: 'Indie Flower', cursive; font-size: 1.6rem; font-weight: 800; color: white; }
 
-        .nav-logo-text {
-            font-family: 'Indie Flower', cursive;
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 25px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-        }
-
+        .nav-menu { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; }
+        .nav-menu a { text-decoration: none; color: white; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav-menu a:hover, .nav-menu a.active { color: var(--viola-light); }
 
-        /* HAMBURGER MENU FIX */
         .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1100; }
         .hamburger span { width: 30px; height: 3px; background: white; border-radius: 5px; transition: 0.3s; }
 
@@ -112,110 +67,34 @@
                 position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
                 background: rgba(0, 0, 0, 0.95); flex-direction: column;
                 justify-content: center; align-items: center; gap: 40px;
-                backdrop-filter: blur(15px); transition: 0.4s; z-index: 1050;
+                backdrop-filter: blur(15px); transition: 0.4s;
             }
             .nav-menu.active { right: 0; }
-            .nav-menu a { font-size: 1.5rem !important; }
-            .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-            .hamburger.active span:nth-child(2) { opacity: 0; }
-            .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
 
         /* LAYOUT PROGETTO */
-        .project-wrapper {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto 50px auto;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+        .project-wrapper { width: 90%; max-width: 1200px; margin: 0 auto 50px auto; display: flex; flex-direction: column; gap: 30px; }
+        .page-title { font-family: 'Indie Flower', cursive; font-size: 3.5rem; text-align: center; margin: 0 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
-        .page-title {
-            font-family: 'Indie Flower', cursive;
-            font-size: 3.5rem;
-            text-align: center;
-            margin: 0 0 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
 
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .box {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            padding: 35px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
-        }
+        .box { background: var(--glass-bg); backdrop-filter: blur(16px); border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); padding: 35px; transition: 0.3s; }
+        .box:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4); }
 
         .full-width { grid-column: 1 / -1; }
         .span-2 { grid-column: span 2; }
 
-        .box-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--viola-light);
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
-            padding-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .box-title { font-size: 1.4rem; font-weight: 800; color: var(--viola-light); margin: 0 0 20px 0; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; }
         .text-standard { font-size: 1.05rem; font-weight: 300; line-height: 1.7; text-align: justify; }
-        .text-lead { font-size: 1.25rem; font-weight: 600; line-height: 1.6; text-align: center; }
+        .text-lead { font-size: 1.3rem; font-weight: 600; line-height: 1.6; text-align: center; color: #fff; }
 
-        .text-quote {
-            font-family: 'Indie Flower', cursive;
-            font-size: 2rem;
-            line-height: 1.4;
-            text-align: center;
-            color: var(--viola-light);
-            margin: 20px 0;
-            padding: 20px;
-            border-left: 5px solid var(--viola-light);
-            border-right: 5px solid var(--viola-light);
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-        }
+        .text-quote { font-family: 'Indie Flower', cursive; font-size: 2.2rem; line-height: 1.4; text-align: center; color: var(--viola-light); margin: 20px 0; padding: 30px; border-left: 5px solid var(--viola-light); border-right: 5px solid var(--viola-light); background: rgba(0,0,0,0.2); border-radius: 10px; }
 
         .custom-list { list-style: none; padding: 0; }
-        .custom-list li {
-            margin-bottom: 15px; padding-left: 25px; position: relative;
-            font-weight: 400; line-height: 1.5;
-        }
-        .custom-list li::before {
-            content: "✦"; color: var(--viola-light);
-            position: absolute; left: 0; top: 0; font-size: 1.2rem;
-        }
+        .custom-list li { margin-bottom: 15px; padding-left: 30px; position: relative; font-weight: 400; }
+        .custom-list li::before { content: "✦"; color: var(--viola-light); position: absolute; left: 0; top: 0; font-size: 1.2rem; }
 
-        @media (max-width: 768px) { .span-2 { grid-column: 1 / -1; } }
-
-        /* FOOTER */
-        footer {
-            width: 100%;
-            text-align: center;
-            padding: 30px;
-            background: rgba(0,0,0,0.4);
-            margin-top: 50px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.85rem;
-            box-sizing: border-box;
-        }
+        footer { width: 100%; text-align: center; padding: 40px; background: rgba(0,0,0,0.4); margin-top: auto; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -236,7 +115,7 @@
         </div>
     </nav>
 
-    <main class="project-wrapper">
+<main class="project-wrapper">
         <h1 class="page-title">Dietro le Quinte</h1>
 
         <div class="project-grid">
@@ -289,20 +168,22 @@
 
     <footer>
         Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br>
-        © 2026 UniViola Avamposto Digitale
+        © 2026 UniViola Avamposto Digitale - Supervisione Tecnica by Aviation Eagle
     </footer>
 
     <script>
-        document.querySelector(".hamburger").addEventListener("click", function() {
-            this.classList.toggle("active");
-            document.querySelector(".nav-menu").classList.toggle("active");
+        const hamburger = document.querySelector(".hamburger");
+        const navMenu = document.querySelector(".nav-menu");
+
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navMenu.classList.toggle("active");
         });
 
-        // Chiude il menu se si clicca su un link (ottimo per mobile)
         document.querySelectorAll(".nav-menu a").forEach(link => {
             link.addEventListener("click", () => {
-                document.querySelector(".hamburger").classList.remove("active");
-                document.querySelector(".nav-menu").classList.remove("active");
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("active");
             });
         });
     </script>
