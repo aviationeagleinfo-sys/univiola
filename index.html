@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/media/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.css">
 
     <style>
@@ -31,7 +32,6 @@
             display: flex; 
             flex-direction: column; 
             align-items: center;
-            /* Rimosso padding-top fisso per favorire la centratura flex se necessario */
         }
 
         @keyframes gradientBG {
@@ -57,8 +57,12 @@
         .nav-menu a { text-decoration: none; color: white; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; transition: color 0.3s; }
         .nav-menu a:hover { color: #d8b4fe; }
 
-        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; background: none; border: none; z-index: 1100; }
         .hamburger span { width: 30px; height: 3px; background: white; border-radius: 5px; transition: 0.3s; }
+        
+        .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
         @media (max-width: 768px) {
             .hamburger { display: flex; }
@@ -71,7 +75,7 @@
             .nav-menu.active { right: 0; }
         }
 
-        /* MAIN PANEL - CENTRATURA OTTIMIZZATA */
+        /* MAIN PANEL */
         .glass-panel {
             background: var(--glass-bg); 
             backdrop-filter: blur(16px);
@@ -79,10 +83,10 @@
             border: 1px solid var(--glass-border);
             width: 90%; 
             max-width: 900px; 
-            margin: 110px auto 50px auto; /* Aumentato margine superiore per compensare la navbar */
+            margin: 110px auto 50px auto; 
             padding: 50px; 
             text-align: center;
-            box-sizing: border-box; /* Evita sforamenti di larghezza */
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -121,7 +125,7 @@
             line-height: 1.8; 
             margin: 30px 0; 
             max-width: 700px;
-            text-align: center; /* Centratura testo standard per migliore leggibilità mobile */
+            text-align: center;
             background: rgba(0,0,0,0.25);
             padding: 30px; 
             border-radius: 20px;
@@ -154,12 +158,16 @@
 
         footer { margin-top: auto; width: 100%; text-align: center; padding: 25px; background: rgba(0, 0, 0, 0.4); font-size: 0.85rem; }
         
+        /* COOKIE SHIELD FIX */
         .cookie-shield {
-            position: fixed; bottom: 25px; left: 25px; width: 50px; height: 50px;
-            background-color: var(--viola-main); border: 2px solid rgba(255, 255, 255, 0.3);
+            position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px;
+            background-color: var(--viola-main); border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%; cursor: pointer; z-index: 9999; display: flex;
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
+            transition: transform 0.3s;
         }
+        .cookie-shield:hover { transform: scale(1.1); background-color: var(--viola-dark); }
+        .cookie-shield svg { width: 28px; height: 28px; fill: white; }
     </style>
 </head>
 <body>
@@ -170,7 +178,9 @@
                 <img src="/media/UniviolaLogoFull.png" alt="Logo Uni Viola" class="nav-logo-img">
                 <span class="nav-logo-text">UniViola</span>
             </a>
-            <div class="hamburger"><span></span><span></span><span></span></div>
+            <button class="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
             <ul class="nav-menu">
                 <li><a href="progetto.html">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
@@ -208,19 +218,63 @@
 
     <footer>Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"</footer>
 
-    <button type="button" class="cookie-shield" onclick="alert('Impostazioni Cookie')"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></button>
+    <button type="button" class="cookie-shield" onclick="CookieConsent.showSettings()" aria-label="Impostazioni Cookie">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.1/dist/cookieconsent.umd.js"></script>
 
     <script>
+        /* LOGICA HAMBURGER */
         const hamburger = document.querySelector(".hamburger");
         const navMenu = document.querySelector(".nav-menu");
+
         hamburger.addEventListener("click", () => {
             hamburger.classList.toggle("active");
             navMenu.classList.toggle("active");
         });
+
         document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
             hamburger.classList.remove("active");
             navMenu.classList.remove("active");
         }));
+
+        /* LOGICA COOKIE (ATTIVAZIONE POPUP) */
+        CookieConsent.run({
+            guiOptions: {
+                consentModal: { layout: "box", position: "bottom right" },
+                settingsModal: { layout: "box", position: "left" }
+            },
+            categories: {
+                necessary: { readOnly: true },
+                analytics: {}
+            },
+            language: {
+                default: "it",
+                translations: {
+                    it: {
+                        consentModal: {
+                            title: "Protocollo Cookie",
+                            description: "Comandante, usiamo i cookie per migliorare l'esperienza su Uni Viola.",
+                            acceptAllBtn: "Accetta tutto",
+                            acceptNecessaryBtn: "Rifiuta tutto",
+                            showSettingsBtn: "Impostazioni"
+                        },
+                        settingsModal: {
+                            title: "Preferenze Privacy",
+                            saveSettinsBtn: "Salva",
+                            acceptAllBtn: "Accetta tutto",
+                            rejectAllBtn: "Rifiuta tutto",
+                            blocks: [
+                                { title: "Utilizzo dei Cookie", description: "Scegli quali dati condividere." },
+                                { title: "Necessari", description: "Per il funzionamento base.", category: "necessary" },
+                                { title: "Analitici", description: "Per migliorare il sito.", category: "analytics" }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
