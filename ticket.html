@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uni Viola - Terminale Aztec Cloud</title>
+    <title>Uni Viola - Terminale Aztec Operativo v2.4</title>
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -46,7 +47,7 @@
         h1, h2 { font-family: 'Indie Flower', cursive; color: white; margin-top: 0; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        input {
+        input, select {
             width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;
             border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);
             color: white; font-size: 1rem; box-sizing: border-box;
@@ -59,35 +60,29 @@
         }
 
         button:hover { background: var(--viola-dark); transform: scale(1.02); }
-        button:disabled { background: #555; cursor: not-allowed; transform: none; }
 
+        .btn-report { background: #17a2b8; }
+        .btn-pdf { background: #343a40; border: 2px solid white; }
         .btn-check { background: #ffc107; color: #1a1a1a; }
-        .btn-email { background: #1DB954; margin-top: 15px; }
 
         #log-area {
             background: rgba(0,0,0,0.4); border-radius: 10px; padding: 15px;
-            height: 120px; overflow-y: auto; font-family: monospace; font-size: 0.9rem;
+            height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.8rem;
             border: 1px solid var(--viola-main); color: #d8b4fe; margin-top: 10px;
         }
 
-        .aztec-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; justify-content: center; }
+        .pax-entry {
+            display: grid; grid-template-columns: 2fr 1fr; gap: 10px;
+            background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 5px;
+        }
+
+        .aztec-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; justify-content: center; }
         .aztec-item { 
             background: white; padding: 15px; border-radius: 10px; 
-            text-align: center; color: black; width: 130px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center; color: black; width: 150px; 
         }
-        canvas { width: 100px; height: 100px; }
-        .code-label { font-size: 8px; font-weight: bold; margin-top: 5px; word-break: break-all; }
-
-        .status-msg {
-            padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold;
-            text-align: center; display: none;
-            transition: all 0.3s ease;
-        }
-
-        #cloud-status {
-            font-size: 0.8rem; text-align: right; color: #00ff88; margin-bottom: 10px;
-        }
+        canvas { width: 120px; height: 120px; display: block; margin: 0 auto; }
+        .code-label { font-size: 8px; font-weight: bold; margin-top: 10px; color: black; }
 
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     </style>
@@ -95,198 +90,261 @@
 <body>
 
     <div id="login-gate">
-        <h1 style="font-size: 2.5rem;">Uni Viola Gate</h1>
-        <p>Inserire Protocollo d'Accesso</p>
+        <h1>Uni Viola Access</h1>
+        <p>Inserire Protocollo di Sicurezza</p>
         <input type="password" id="psw-input" placeholder="Password...">
-        <button onclick="checkAccess()">Inizializza Terminale</button>
+        <button onclick="checkAccess()">Inizializza</button>
     </div>
 
     <main id="admin-panel">
-        <div id="cloud-status">☁️ Connessione Cloud in attesa...</div>
-        <h1 style="text-align: center; font-size: 3.5rem;">Terminale Aztec UniViola</h1>
+        <h1 style="text-align: center; font-size: 2.5rem;">Terminale Aztec UniViola v2.4</h1>
         
         <div class="grid">
             <div class="glass-card">
-                <h2>Emissione Biglietti</h2>
-                <label>Nome:</label>
-                <input type="text" id="pax-name" placeholder="Es. Eagle One">
-                <label>Quantità:</label>
-                <input type="number" id="pax-count" value="1" min="1">
-                <button onclick="generateAztec()">Genera Protocollo Aztec</button>
+                <h2>Emissione Multipla</h2>
+                <label>Quantità Biglietti:</label>
+                <input type="number" id="pax-count" value="1" min="1" max="10" onchange="renderPaxInputs()">
+                
+                <div id="pax-inputs-container"></div>
+
+                <button onclick="generateAztec()">Genera e Registra</button>
+                <button id="pdf-btn" class="btn-pdf" style="display:none;" onclick="downloadPDF()">⬇️ Scarica PDF (Layout A5)</button>
                 
                 <div id="log-area">Sistemi pronti...</div>
                 <div class="aztec-grid" id="aztec-container"></div>
-                <button id="email-btn" class="btn-email" style="display:none;" onclick="sendEmail()">Invia via Email</button>
             </div>
 
             <div class="glass-card">
                 <h2>Verifica & Check-in</h2>
-                <p>Scannerizza il codice o digita:</p>
-                <input type="text" id="scan-input" placeholder="SCANNING..." autocomplete="off">
-                <button class="btn-check" onclick="verifyTicket()">Conferma Validità</button>
+                <button class="btn-report" onclick="showReport()">📊 Registro Ingressi</button>
                 
-                <div id="status-box" class="status-msg"></div>
+                <div style="margin-top: 20px;">
+                    <input type="text" id="scan-input" placeholder="SCANSIONE IN CORSO..." autocomplete="off">
+                    <button class="btn-check" onclick="verifyTicket()">Conferma Ingresso</button>
+                </div>
+                
+                <div id="status-box" style="padding:15px; border-radius:10px; margin-top:15px; display:none; text-align:center; font-weight: bold;"></div>
 
-                <div style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                    <h3>Dati di Navigazione (Real-Time)</h3>
-                    <p id="stat-text">Codici attivi: 0 | Accessi: 0</p>
-                    <button style="background: #dc3545; font-size: 0.7rem; width: auto;" onclick="clearSystem()">Reset Database Cloud</button>
+                <div style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                    <p id="stat-text">In attesa di dati...</p>
+                    <button style="background: #dc3545; font-size: 0.7rem; width: auto;" onclick="clearSystem()">Reset Totale</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
-
-        // Configurazione Firebase recuperata dal tuo messaggio precedente
-        const firebaseConfig = {
-            apiKey: "AIzaSyC0_midSQND4Fsg0WEHhN-69dANsQ-0OPg",
-            authDomain: "ticket-univiola.firebaseapp.com",
-            databaseURL: "https://ticket-univiola-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "ticket-univiola",
-            storageBucket: "ticket-univiola.firebasestorage.app",
-            messagingSenderId: "144789739757",
-            appId: "1:144789739757:web:a06074655786d398e094e4",
-            measurementId: "G-J79EQMQPYH"
-        };
-
-        // Inizializza Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        let dbTickets = [];
-        let dbUsed = [];
+    <script>
         const MASTER_PSW = "UNIVIOLA2026";
+        const LOGO_URL = "https://univiola.aviationeagle.co.uk/media/UniviolaLogoNoSfondo.png";
+        let dbTickets = JSON.parse(localStorage.getItem('uv_tickets_v4')) || [];
+        let dbUsed = JSON.parse(localStorage.getItem('uv_used_v4')) || [];
+        let currentBatch = [];
 
-        // Ascolto Real-time
-        const ticketsRef = ref(db, 'tickets');
-        onValue(ticketsRef, (snapshot) => {
-            dbTickets = [];
-            dbUsed = [];
-            if (snapshot.exists()) {
-                snapshot.forEach((childSnapshot) => {
-                    const code = childSnapshot.key;
-                    const data = childSnapshot.val();
-                    dbTickets.push(code);
-                    if (data.used) dbUsed.push(code);
-                });
-            }
-            updateStats();
-            document.getElementById('cloud-status').innerText = "🟢 Cloud Sincronizzato";
-        });
+        window.onload = () => { if(dbTickets.length > 0) updateStats(); renderPaxInputs(); };
 
-        window.checkAccess = function() {
+        function checkAccess() {
             if(document.getElementById('psw-input').value === MASTER_PSW) {
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('scan-input').focus();
-            } else {
-                alert("Protocollo errato.");
-            }
-        };
+                renderPaxInputs();
+                updateStats();
+            } else { alert("Protocollo errato."); }
+        }
 
-        // FUNZIONE MODIFICATA: Rimozione trattini
-        window.generateAztec = function() {
-            const nameInput = document.getElementById('pax-name').value;
-            const name = nameInput.toUpperCase().replace(/\s+/g, '') || "UV";
-            const count = parseInt(document.getElementById('pax-count').value);
-            const log = document.getElementById('log-area');
-            const container = document.getElementById('aztec-container');
-            
-            log.innerHTML = "<b>CARICAMENTO NEL CLOUD...</b><br>";
+        function renderPaxInputs() {
+            const count = document.getElementById('pax-count').value;
+            const container = document.getElementById('pax-inputs-container');
             container.innerHTML = "";
-            let batch = [];
+            for(let i=0; i<count; i++) {
+                container.innerHTML += `
+                    <div class="pax-entry">
+                        <input type="text" class="pax-name-input" placeholder="Nome Titolare ${i+1}">
+                        <select class="pax-type-input">
+                            <option value="ADULTO">Adulto</option>
+                            <option value="MINORENNE">Minorenne</option>
+                        </select>
+                    </div>
+                `;
+            }
+        }
 
-            for(let i=1; i<=count; i++) {
-                const rand = Math.random().toString(36).substr(2, 4).toUpperCase();
-                // RIGA MODIFICATA QUI SOTTO: rimossi i "-"
-                const code = `UV${name}${rand}${i}`;
-                batch.push(code);
+        function generateAztec() {
+            const names = document.querySelectorAll('.pax-name-input');
+            const types = document.querySelectorAll('.pax-type-input');
+            const container = document.getElementById('aztec-container');
+            const log = document.getElementById('log-area');
+            
+            container.innerHTML = "";
+            currentBatch = [];
+            log.innerHTML = "<b>GENESI MATRICE AZTEC...</b><br>";
 
-                set(ref(db, 'tickets/' + code), {
-                    nome: name,
-                    used: false,
-                    timestamp: Date.now()
-                });
+            names.forEach((el, index) => {
+                const name = el.value.toUpperCase() || `OSPITE${index+1}`;
+                const type = types[index].value;
+                const rand = Math.random().toString(36).substr(2, 5).toUpperCase();
+                
+                // Trattini rimossi. Estrazione dei primi 3 caratteri puliti.
+                const cleanName = name.substring(0,3).replace(/[^A-Z0-9]/g, '');
+                const code = `UV${rand}${cleanName}`;
+                
+                const ticketObj = { code, name, type, date: new Date().toLocaleString() };
+                dbTickets.push(ticketObj);
+                currentBatch.push(ticketObj);
 
                 const div = document.createElement('div');
                 div.className = 'aztec-item';
+                
                 const canvas = document.createElement('canvas');
+                canvas.id = `canvas-id-${index}`;
                 div.appendChild(canvas);
-                const label = document.createElement('div');
-                label.className = 'code-label';
-                label.innerText = code;
-                div.appendChild(label);
+                
+                // Creazione nodo separato per il testo, preservando il canvas
+                const labelInfo = document.createElement('div');
+                labelInfo.className = 'code-label';
+                labelInfo.innerHTML = `${name}<br><b>${code}</b>`;
+                div.appendChild(labelInfo);
+                
                 container.appendChild(div);
 
                 try {
-                    bwipjs.toCanvas(canvas, {
+                    bwipjs.toCanvas(`canvas-id-${index}`, {
                         bcid: 'azteccode',
                         text: code,
-                        scale: 2,
-                        height: 15,
-                        includetext: false
+                        scale: 4,
+                        padding: 2
                     });
-                    log.innerHTML += `Codice ${i} caricato: ${code}<br>`;
-                } catch (e) {
-                    log.innerHTML += `<span style="color:red">Errore visivo ${i}</span><br>`;
+                    log.innerHTML += `Protocollo impresso per ${name}<br>`;
+                } catch (e) { log.innerHTML += `ERRORE: ${e}<br>`; }
+            });
+
+            localStorage.setItem('uv_tickets_v4', JSON.stringify(dbTickets));
+            document.getElementById('pdf-btn').style.display = 'block';
+            updateStats();
+        }
+
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const logoBase64 = await getBase64Image(LOGO_URL);
+
+            for (let i = 0; i < currentBatch.length; i++) {
+                const ticket = currentBatch[i];
+                const isEven = i % 2 !== 0;
+                if (i > 0 && !isEven) doc.addPage();
+
+                const startY = isEven ? 148.5 : 0;
+                
+                // Design A5
+                doc.setDrawColor(0);
+                doc.setLineWidth(0.2);
+                doc.setLineDashPattern([2, 2], 0);
+                doc.rect(5, startY + 5, 200, 138.5); 
+                doc.setLineDashPattern([], 0);
+                doc.setLineWidth(0.8);
+                doc.rect(10, startY + 10, 190, 128.5); 
+                
+                doc.line(10, startY + 35, 200, startY + 35);
+                
+                if(logoBase64) doc.addImage(logoBase64, 'PNG', 15, startY + 13, 18, 18);
+                
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(24);
+                doc.text("UNI VIOLA", 40, startY + 23);
+                doc.setFontSize(10);
+                doc.text("BOARDING PASS - AVIATION EAGLE NETWORK", 40, startY + 29);
+
+                doc.setFontSize(14);
+                doc.text("TITOLARE:", 20, startY + 55);
+                doc.setFont("helvetica", "normal");
+                doc.text(ticket.name, 65, startY + 55);
+
+                doc.setFont("helvetica", "bold");
+                doc.text("CATEGORIA:", 20, startY + 68);
+                doc.setFont("helvetica", "normal");
+                doc.text(ticket.type, 65, startY + 68);
+
+                doc.setFont("helvetica", "bold");
+                doc.text("EMESSO IL:", 20, startY + 81);
+                doc.setFont("helvetica", "normal");
+                doc.text(ticket.date, 65, startY + 81);
+
+                doc.setLineWidth(0.5);
+                doc.rect(130, startY + 45, 60, 80);
+                doc.setFontSize(8);
+                doc.text("SECURITY CHECK", 143, startY + 52);
+
+                const canvas = document.getElementById(`canvas-id-${i}`);
+                if (canvas) {
+                    const imgData = canvas.toDataURL('image/png');
+                    doc.addImage(imgData, 'PNG', 135, startY + 55, 50, 50);
                 }
+
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "bold");
+                doc.text(ticket.code, 160, startY + 115, { align: "center" });
+
+                doc.setFontSize(7);
+                doc.text("VALIDO PER UN SINGOLO ACCESSO - SISTEMA CRITTOGRAFICO AZTEC", 20, startY + 133);
             }
-            
-            const emailBtn = document.getElementById('email-btn');
-            emailBtn.style.display = 'block';
-            emailBtn.dataset.codes = batch.join('\n');
-            emailBtn.dataset.pax = nameInput || "Ospite";
-        };
 
-        window.sendEmail = function() {
-            const btn = document.getElementById('email-btn');
-            const subject = encodeURIComponent(`Biglietti Uni Viola - ${btn.dataset.pax}`);
-            const body = encodeURIComponent(`Codici generati:\n\n${btn.dataset.codes}`);
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
-        };
+            doc.save(`Tickets_UniViola_v2.4.pdf`);
+        }
 
-        window.verifyTicket = function() {
+        function getBase64Image(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL("image/png"));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
+        function showReport() {
+            let list = dbTickets.slice(-10).map(t => `${t.name}: ${t.code}`).join('\n');
+            alert(`REGISTRO ULTIMI INGRESSI:\n--------------------------\n${list}`);
+        }
+
+        function verifyTicket() {
             const input = document.getElementById('scan-input');
             const code = input.value.trim().toUpperCase();
             const box = document.getElementById('status-box');
-            
-            if(!code) return;
             box.style.display = 'block';
+            const ticket = dbTickets.find(t => t.code === code);
 
-            if(!dbTickets.includes(code)) {
-                box.textContent = "❌ CODICE NON TROVATO NEL CLOUD";
+            if(!ticket) {
+                box.textContent = "❌ CODICE INESISTENTE";
                 box.style.background = "#dc3545";
+                box.style.color = "white";
             } else if(dbUsed.includes(code)) {
-                box.textContent = "⚠️ ATTENZIONE: CODICE GIÀ USATO";
+                box.textContent = `⚠️ GIÀ USATO: ${ticket.name}`;
                 box.style.background = "#fd7e14";
+                box.style.color = "white";
             } else {
-                update(ref(db, 'tickets/' + code), { used: true, scanTime: Date.now() })
-                .then(() => {
-                    box.textContent = "✅ ACCESSO CONFERMATO E SINCRONIZZATO";
-                    box.style.background = "#28a745";
-                });
+                box.textContent = `✅ ACCESSO: ${ticket.name}`;
+                box.style.background = "#28a745";
+                box.style.color = "white";
+                dbUsed.push(code);
+                localStorage.setItem('uv_used_v4', JSON.stringify(dbUsed));
             }
             input.value = "";
-            input.focus();
-        };
-
-        window.clearSystem = function() {
-            if(confirm("ATTENZIONE: Svuotare il database Cloud?")) {
-                remove(ref(db, 'tickets')).then(() => alert("Reset completato."));
-            }
-        };
-
-        function updateStats() {
-            document.getElementById('stat-text').textContent = 
-                `Codici generati: ${dbTickets.length} | Accessi registrati: ${dbUsed.length}`;
+            updateStats();
         }
 
-        document.getElementById('scan-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') window.verifyTicket();
-        });
+        function updateStats() {
+            document.getElementById('stat-text').innerHTML = 
+                `<b>Attivi:</b> ${dbTickets.length} | <b>Ingressi:</b> ${dbUsed.length}`;
+        }
+
+        function clearSystem() {
+            if(confirm("Formattare il database?")) { localStorage.clear(); location.reload(); }
+        }
     </script>
 </body>
 </html>
