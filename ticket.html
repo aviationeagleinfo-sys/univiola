@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Viola - Terminale Aztec Cloud</title>
+    <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --viola-main: #8A2BE2;
+            --viola-dark: #4B0082;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0; padding: 0; min-height: 100vh;
+            background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white; display: flex; justify-content: center; align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #login-gate {
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            padding: 40px; border-radius: 30px; border: 1px solid var(--glass-border);
+            text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        #admin-panel { display: none; width: 95%; max-width: 1100px; margin: 20px; }
+
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            border-radius: 25px; border: 1px solid var(--glass-border);
+            padding: 30px; margin-bottom: 20px;
+        }
+
+        h1, h2 { font-family: 'Indie Flower', cursive; color: white; margin-top: 0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        input {
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;
+            border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);
+            color: white; font-size: 1rem; box-sizing: border-box;
+        }
+
+        button {
+            width: 100%; padding: 15px; border-radius: 50px; border: none;
+            background: var(--viola-main); color: white; font-weight: 800;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
+        }
+
+        button:hover { background: var(--viola-dark); transform: scale(1.02); }
+        button:disabled { background: #555; cursor: not-allowed; transform: none; }
+
+        .btn-check { background: #ffc107; color: #1a1a1a; }
+        .btn-email { background: #1DB954; margin-top: 15px; }
+
+        #log-area {
+            background: rgba(0,0,0,0.4); border-radius: 10px; padding: 15px;
+            height: 120px; overflow-y: auto; font-family: monospace; font-size: 0.9rem;
+            border: 1px solid var(--viola-main); color: #d8b4fe; margin-top: 10px;
+        }
+
+        .aztec-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; justify-content: center; }
+        .aztec-item { 
+            background: white; padding: 15px; border-radius: 10px; 
+            text-align: center; color: black; width: 130px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        canvas { width: 100px; height: 100px; }
+        .code-label { font-size: 8px; font-weight: bold; margin-top: 5px; word-break: break-all; }
+
+        .status-msg {
+            padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold;
+            text-align: center; display: none;
+            transition: all 0.3s ease;
+        }
+
+        #cloud-status {
+            font-size: 0.8rem; text-align: right; color: #00ff88; margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div id="login-gate">
+        <h1 style="font-size: 2.5rem;">Uni Viola Gate</h1>
+        <p>Inserire Protocollo d'Accesso</p>
+        <input type="password" id="psw-input" placeholder="Password...">
+        <button onclick="checkAccess()">Inizializza Terminale</button>
+    </div>
+
+    <main id="admin-panel">
+        <div id="cloud-status">☁️ Connessione Cloud in attesa...</div>
+        <h1 style="text-align: center; font-size: 3.5rem;">Terminale Aztec UniViola</h1>
+        
+        <div class="grid">
+            <div class="glass-card">
+                <h2>Emissione Biglietti</h2>
+                <label>Nome:</label>
+                <input type="text" id="pax-name" placeholder="Es. Eagle One">
+                <label>Quantità:</label>
+                <input type="number" id="pax-count" value="1" min="1">
+                <button onclick="generateAztec()">Genera Protocollo Aztec</button>
+                
+                <div id="log-area">Sistemi pronti...</div>
+                <div class="aztec-grid" id="aztec-container"></div>
+                <button id="email-btn" class="btn-email" style="display:none;" onclick="sendEmail()">Invia via Email</button>
+            </div>
+
+            <div class="glass-card">
+                <h2>Verifica & Check-in</h2>
+                <p>Scannerizza il codice o digita:</p>
+                <input type="text" id="scan-input" placeholder="SCANNING..." autocomplete="off">
+                <button class="btn-check" onclick="verifyTicket()">Conferma Validità</button>
+                
+                <div id="status-box" class="status-msg"></div>
+
+                <div style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <h3>Dati di Navigazione (Real-Time)</h3>
+                    <p id="stat-text">Codici attivi: 0 | Accessi: 0</p>
+                    <button style="background: #dc3545; font-size: 0.7rem; width: auto;" onclick="clearSystem()">Reset Database Cloud</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+        // Configurazione Firebase recuperata dal tuo messaggio precedente
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0_midSQND4Fsg0WEHhN-69dANsQ-0OPg",
+            authDomain: "ticket-univiola.firebaseapp.com",
+            databaseURL: "https://ticket-univiola-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ticket-univiola",
+            storageBucket: "ticket-univiola.firebasestorage.app",
+            messagingSenderId: "144789739757",
+            appId: "1:144789739757:web:a06074655786d398e094e4",
+            measurementId: "G-J79EQMQPYH"
+        };
+
+        // Inizializza Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let dbTickets = [];
+        let dbUsed = [];
+        const MASTER_PSW = "UNIVIOLA2026";
+
+        // Ascolto Real-time
+        const ticketsRef = ref(db, 'tickets');
+        onValue(ticketsRef, (snapshot) => {
+            dbTickets = [];
+            dbUsed = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const code = childSnapshot.key;
+                    const data = childSnapshot.val();
+                    dbTickets.push(code);
+                    if (data.used) dbUsed.push(code);
+                });
+            }
+            updateStats();
+            document.getElementById('cloud-status').innerText = "🟢 Cloud Sincronizzato";
+        });
+
+        window.checkAccess = function() {
+            if(document.getElementById('psw-input').value === MASTER_PSW) {
+                document.getElementById('login-gate').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('scan-input').focus();
+            } else {
+                alert("Protocollo errato.");
+            }
+        };
+
+        // FUNZIONE MODIFICATA: Rimozione trattini
+        window.generateAztec = function() {
+            const nameInput = document.getElementById('pax-name').value;
+            const name = nameInput.toUpperCase().replace(/\s+/g, '') || "UV";
+            const count = parseInt(document.getElementById('pax-count').value);
+            const log = document.getElementById('log-area');
+            const container = document.getElementById('aztec-container');
+            
+            log.innerHTML = "<b>CARICAMENTO NEL CLOUD...</b><br>";
+            container.innerHTML = "";
+            let batch = [];
+
+            for(let i=1; i<=count; i++) {
+                const rand = Math.random().toString(36).substr(2, 4).toUpperCase();
+                // RIGA MODIFICATA QUI SOTTO: rimossi i "-"
+                const code = `UV${name}${rand}${i}`;
+                batch.push(code);
+
+                set(ref(db, 'tickets/' + code), {
+                    nome: name,
+                    used: false,
+                    timestamp: Date.now()
+                });
+
+                const div = document.createElement('div');
+                div.className = 'aztec-item';
+                const canvas = document.createElement('canvas');
+                div.appendChild(canvas);
+                const label = document.createElement('div');
+                label.className = 'code-label';
+                label.innerText = code;
+                div.appendChild(label);
+                container.appendChild(div);
+
+                try {
+                    bwipjs.toCanvas(canvas, {
+                        bcid: 'azteccode',
+                        text: code,
+                        scale: 2,
+                        height: 15,
+                        includetext: false
+                    });
+                    log.innerHTML += `Codice ${i} caricato: ${code}<br>`;
+                } catch (e) {
+                    log.innerHTML += `<span style="color:red">Errore visivo ${i}</span><br>`;
+                }
+            }
+            
+            const emailBtn = document.getElementById('email-btn');
+            emailBtn.style.display = 'block';
+            emailBtn.dataset.codes = batch.join('\n');
+            emailBtn.dataset.pax = nameInput || "Ospite";
+        };
+
+        window.sendEmail = function() {
+            const btn = document.getElementById('email-btn');
+            const subject = encodeURIComponent(`Biglietti Uni Viola - ${btn.dataset.pax}`);
+            const body = encodeURIComponent(`Codici generati:\n\n${btn.dataset.codes}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        };
+
+        window.verifyTicket = function() {
+            const input = document.getElementById('scan-input');
+            const code = input.value.trim().toUpperCase();
+            const box = document.getElementById('status-box');
+            
+            if(!code) return;
+            box.style.display = 'block';
+
+            if(!dbTickets.includes(code)) {
+                box.textContent = "❌ CODICE NON TROVATO NEL CLOUD";
+                box.style.background = "#dc3545";
+            } else if(dbUsed.includes(code)) {
+                box.textContent = "⚠️ ATTENZIONE: CODICE GIÀ USATO";
+                box.style.background = "#fd7e14";
+            } else {
+                update(ref(db, 'tickets/' + code), { used: true, scanTime: Date.now() })
+                .then(() => {
+                    box.textContent = "✅ ACCESSO CONFERMATO E SINCRONIZZATO";
+                    box.style.background = "#28a745";
+                });
+            }
+            input.value = "";
+            input.focus();
+        };
+
+        window.clearSystem = function() {
+            if(confirm("ATTENZIONE: Svuotare il database Cloud?")) {
+                remove(ref(db, 'tickets')).then(() => alert("Reset completato."));
+            }
+        };
+
+        function updateStats() {
+            document.getElementById('stat-text').textContent = 
+                `Codici generati: ${dbTickets.length} | Accessi registrati: ${dbUsed.length}`;
+        }
+
+        document.getElementById('scan-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') window.verifyTicket();
+        });
+    </script>
+</body>
+</html>
