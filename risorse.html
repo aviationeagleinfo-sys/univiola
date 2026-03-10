@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risorse Didattiche - Uni Viola</title>
+    <link rel="icon" type="image/x-icon" href="/media/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --viola-main: #8A2BE2;
+            --viola-dark: #4B0082;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent: #d8b4fe;
+            --read-color: #23a6d5;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Intestazione Elegante */
+        .header-section {
+            text-align: center; margin-top: 40px; padding: 0 20px;
+        }
+        .header-section h1 {
+            font-family: 'Indie Flower', cursive; 
+            font-size: clamp(2.5rem, 6vw, 4rem); 
+            margin-bottom: 10px; text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .header-section p {
+            font-size: 1.1rem; max-width: 700px; margin: 0 auto;
+            color: #e2e8f0; font-weight: 300; line-height: 1.6;
+        }
+
+        /* Griglia Risorse */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px; width: 90%; max-width: 1200px; margin: 50px auto;
+        }
+
+        .resource-card {
+            background: var(--glass-bg); backdrop-filter: blur(12px);
+            border-radius: 20px; border: 1px solid var(--glass-border);
+            overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; 
+            position: relative; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.4);
+        }
+
+        /* Proporzioni stile copertina libro/documento */
+        .resource-cover { 
+            width: 100%; height: 320px; object-fit: cover; 
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .resource-info { 
+            padding: 25px; flex-grow: 1; display: flex; flex-direction: column;
+        }
+        .resource-tag {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--accent); margin-bottom: 8px; font-weight: 600;
+        }
+        .resource-title {
+            margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 800; line-height: 1.3;
+        }
+        .resource-author {
+            font-style: italic; font-size: 0.9rem; color: #cbd5e1; margin-bottom: 15px;
+        }
+        .resource-desc {
+            font-size: 0.95rem; line-height: 1.5; color: #f1f5f9; margin-bottom: 20px;
+        }
+        
+        .actions-container { 
+            margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;
+        }
+
+        /* Bottoni */
+        .btn { 
+            padding: 12px 20px; border-radius: 30px; border: none; cursor: pointer; 
+            font-weight: 600; text-decoration: none; text-align: center; 
+            font-family: 'Montserrat', sans-serif; transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn:hover { filter: brightness(1.1); }
+        
+        .btn-read { background: var(--read-color); color: white; flex: 1; font-size: 0.9rem;}
+        .btn-download { background: transparent; color: white; border: 1px solid white; flex: 1; font-size: 0.9rem;}
+        .btn-download:hover { background: rgba(255,255,255,0.1); }
+
+        /* Stili Admin */
+        #adminPanel {
+            background: rgba(0,0,0,0.75); padding: 35px; border-radius: 20px;
+            width: 85%; max-width: 600px; margin: 30px auto;
+            display: none; border: 2px solid var(--accent);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4); backdrop-filter: blur(10px);
+        }
+        input[type="text"], textarea {
+            width: 100%; padding: 14px; margin: 10px 0;
+            background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+            color: white; border-radius: 12px; box-sizing: border-box; font-family: inherit;
+        }
+        input[type="text"]::placeholder, textarea::placeholder { color: rgba(255,255,255,0.5); }
+        
+        .btn-pubblica { background: var(--spotify-green); color: white; width: 100%; margin-top: 20px; padding: 16px; font-size: 1rem;}
+        .btn-cancel { background: #555; color: white; width: 100%; margin-top: 10px; display: none; padding: 12px;}
+        
+        .admin-controls { display:flex; gap:10px; width:100%; margin-top: 15px; }
+        .btn-edit { background: #ffaa00; color: white; flex: 1; font-size: 0.8rem; padding: 8px;}
+        .btn-delete { background: #ff4d4d; color: white; flex: 1; font-size: 0.8rem; padding: 8px;}
+
+        .admin-trigger { text-align: center; margin: 50px 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" style="font-family:'Indie Flower'; color:white; text-decoration:none; font-size:1.8rem;">UniViola</a>
+    </nav>
+
+    <div class="header-section">
+        <h1>Proposte di Lettura</h1>
+        <p>Una selezione curata di risorse didattiche, articoli e libri per approfondire, comprendere e costruire insieme una cultura del rispetto. Scegli un documento per visualizzarlo direttamente nel tuo terminale o scaricalo per la consultazione offline.</p>
+    </div>
+
+    <div id="adminPanel">
+        <h2 id="adminTitle" style="margin-top:0; color:var(--accent); font-family:'Indie Flower'; font-size:2rem;">Aggiungi Risorsa</h2>
+        <input type="hidden" id="editId">
+        
+        <input type="text" id="categoria" placeholder="Categoria (es. Libro, Saggio, Dispensa scolastica)">
+        <input type="text" id="titolo" placeholder="Titolo del documento">
+        <input type="text" id="autore" placeholder="Autore / Fonte">
+        <input type="text" id="linkCover" placeholder="URL Immagine Copertina (opzionale)">
+        <input type="text" id="linkPdf" placeholder="URL File PDF o Risorsa">
+        <textarea id="desc" rows="4" placeholder="Breve sinossi o descrizione del contenuto..."></textarea>
+
+        <button class="btn btn-pubblica" id="submitBtn" onclick="saveResource()">CARICA NEL DATABASE</button>
+        <button class="btn btn-cancel" id="cancelBtn" onclick="resetForm()">ANNULLA MANOVRA</button>
+    </div>
+
+    <div class="resource-grid" id="grid"></div>
+
+    <div class="admin-trigger">
+        <button class="btn" id="loginBtn" onclick="toggleAdmin()" style="background:rgba(255,255,255,0.1); color:white; border: 1px solid var(--glass-border); display:inline-flex;">Accedi al Gestionale Risorse</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Configurazione Rete Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5232bpf2y4pKwBq2_lEICUU6wPnVnEeg",
+            authDomain: "univiola-ee9b2.firebaseapp.com",
+            databaseURL: "https://univiola-ee9b2-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "univiola-ee9b2",
+            storageBucket: "univiola-ee9b2.firebasestorage.app",
+            messagingSenderId: "540543531950",
+            appId: "1:540543531950:web:00e3e03c69eb74af8aa63f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        // ATTENZIONE: Nuovo nodo dedicato per non mescolarsi con le immagini del portfolio
+        const resourcesRef = db.ref('risorse_didattiche'); 
+
+        let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+
+        // Avvio Interfaccia Admin
+        if (isAdmin) {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('loginBtn').innerText = 'Chiudi Gestionale';
+        }
+
+        // Radar: Lettura in tempo reale
+        resourcesRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            
+            if (data) {
+                Object.keys(data).forEach(id => {
+                    const item = data[id];
+                    
+                    // Fallback se non c'è la copertina
+                    const coverImg = item.cover || 'https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=600&auto=format&fit=crop';
+                    const category = item.category || 'Documento';
+                    const author = item.author ? `<div class="resource-author">di ${item.author}</div>` : '';
+
+                    let adminButtons = '';
+                    if (isAdmin) {
+                        adminButtons = `
+                            <hr style="border-color:var(--glass-border); margin: 15px 0; width: 100%;">
+                            <div class="admin-controls">
+                                <button class="btn btn-edit" onclick="editResource('${id}')">✏️ Modifica</button>
+                                <button class="btn btn-delete" onclick="deleteResource('${id}')">🗑️ Rimuovi</button>
+                            </div>
+                        `;
+                    }
+
+                    grid.innerHTML += `
+                        <div class="resource-card">
+                            <img src="${coverImg}" class="resource-cover" alt="Copertina">
+                            <div class="resource-info">
+                                <div class="resource-tag">${category}</div>
+                                <h3 class="resource-title">${item.title}</h3>
+                                ${author}
+                                <div class="resource-desc">${item.desc}</div>
+                                
+                                <div class="actions-container">
+                                    <a href="${item.pdfLink}" target="_blank" class="btn btn-read">📖 Leggi</a>
+                                    <a href="${item.pdfLink}" download class="btn btn-download">⬇️ Scarica</a>
+                                    ${adminButtons}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                grid.innerHTML = '<p style="text-align:center; width:100%; color:#cbd5e1;">Nessun documento rilevato in questo settore.</p>';
+            }
+        });
+
+        // Sicurezza Livello 1
+        function toggleAdmin() {
+            if (!isAdmin) {
+                const pass = prompt("Codice di autorizzazione navale:");
+                if (pass === "26viola20uni") {
+                    sessionStorage.setItem('isAdmin', 'true');
+                    location.reload(); 
+                } else if (pass !== null) {
+                    alert("Accesso negato.");
+                }
+            } else {
+                sessionStorage.removeItem('isAdmin');
+                location.reload();
+            }
+        }
+
+        // Upload nel Database
+        function saveResource() {
+            const id = document.getElementById('editId').value;
+            const category = document.getElementById('categoria').value || 'Risorsa';
+            const title = document.getElementById('titolo').value;
+            const author = document.getElementById('autore').value;
+            const cover = document.getElementById('linkCover').value;
+            const pdfLink = document.getElementById('linkPdf').value;
+            const desc = document.getElementById('desc').value;
+
+            if (title && pdfLink) {
+                const resourceData = { category, title, author, cover, pdfLink, desc };
+
+                if (id) {
+                    db.ref('risorse_didattiche/' + id).update(resourceData)
+                        .then(() => {
+                            alert("Dati aggiornati nei sistemi.");
+                            resetForm();
+                        })
+                        .catch((error) => alert("Errore di trasmissione: " + error.message));
+                } else {
+                    resourcesRef.push(resourceData)
+                        .then(() => {
+                            alert("Risorsa distribuita con successo alla flotta!");
+                            resetForm();
+                        })
+                        .catch((error) => alert("Errore di trasmissione: " + error.message));
+                }
+            } else {
+                alert("Titolo e URL del File sono campi operativi obbligatori.");
+            }
+        }
+
+        // Predisposizione Modifica
+        function editResource(id) {
+            resourcesRef.child(id).once('value', snapshot => {
+                const data = snapshot.val();
+                if(data) {
+                    document.getElementById('editId').value = id;
+                    document.getElementById('categoria').value = data.category || '';
+                    document.getElementById('titolo').value = data.title;
+                    document.getElementById('autore').value = data.author || '';
+                    document.getElementById('linkCover').value = data.cover || '';
+                    document.getElementById('linkPdf').value = data.pdfLink;
+                    document.getElementById('desc').value = data.desc;
+                    
+                    document.getElementById('adminTitle').innerText = "Modifica Parametri Risorsa";
+                    document.getElementById('submitBtn').innerText = "AGGIORNA DATABASE";
+                    document.getElementById('cancelBtn').style.display = "block";
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        // Reset Terminale
+        function resetForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('titolo').value = '';
+            document.getElementById('autore').value = '';
+            document.getElementById('linkCover').value = '';
+            document.getElementById('linkPdf').value = '';
+            document.getElementById('desc').value = '';
+            
+            document.getElementById('adminTitle').innerText = "Aggiungi Risorsa";
+            document.getElementById('submitBtn').innerText = "CARICA NEL DATABASE";
+            document.getElementById('cancelBtn').style.display = "none";
+        }
+
+        // Cancellazione Definitiva
+        function deleteResource(id) {
+            if (confirm("Attenzione: rimuovere definitivamente questa risorsa dai banchi di memoria?")) {
+                db.ref('risorse_didattiche/' + id).remove();
+            }
+        }
+    </script>
+</body>
+</html>
