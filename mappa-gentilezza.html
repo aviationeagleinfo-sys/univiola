@@ -14,15 +14,14 @@
     <style>
         :root {
             --viola-main: #8A2BE2;
-            --viola-dark: #4B0082;
             --glass-bg: rgba(255, 255, 255, 0.15);
             --glass-border: rgba(255, 255, 255, 0.3);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
             background: linear-gradient(-45deg, #1a0b2e, #4B0082, #8A2BE2, #23a6d5);
             background-size: 400% 400%;
@@ -30,7 +29,7 @@
             color: white;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centratura orizzontale */
+            align-items: center;
         }
 
         @keyframes gradientBG {
@@ -39,21 +38,67 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NAVBAR */
+        /* Navbar & Hamburger */
         .navbar {
-            position: fixed; top: 0; width: 100%; height: 70px;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border); z-index: 1000;
-            display: flex; justify-content: center; align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .nav-container { width: 90%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo-link { display: flex; align-items: center; text-decoration: none; gap: 12px; }
-        .nav-logo-img { height: 45px; width: auto; }
-        .nav-logo-text { font-family: 'Indie Flower', cursive; font-size: 1.6rem; font-weight: 800; color: white; }
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .nav-menu { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; }
-        .nav-menu a { text-decoration: none; color: white; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo-link:hover { transform: scale(1.05); }
+
+        .nav-logo-img { height: 45px; width: auto; }
+
+        .nav-logo-text {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
         .nav-menu a:hover { color: #d8b4fe; }
 
         .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1100; }
@@ -65,72 +110,66 @@
                 position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
                 background: rgba(0, 0, 0, 0.95); flex-direction: column;
                 justify-content: center; align-items: center; gap: 40px;
-                backdrop-filter: blur(15px); transition: 0.4s;
+                backdrop-filter: blur(15px); z-index: 1050; transition: 0.4s;
             }
             .nav-menu.active { right: 0; }
+            .nav-menu a { font-size: 1.5rem !important; }
+            .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
 
-        /* MAIN CONTENT - CENTRATURA OTTIMIZZATA */
+        /* Main Content */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 30px;
             border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
             width: 90%;
             max-width: 1000px;
-            margin: 110px auto 40px auto; /* Centratura automatica e spazio navbar */
+            margin: 110px auto 40px auto; /* Aumentato margine top per navbar fissa */
             padding: 40px;
             text-align: center;
-            box-sizing: border-box;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
 
         h1 {
             font-family: 'Indie Flower', cursive;
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            font-size: 3.5rem;
             margin: 10px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .subtitle { margin-bottom: 30px; font-weight: 300; font-size: 1.1rem; }
 
-        .legenda { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        /* Legenda */
+        .legenda { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .legenda-item {
-            display: flex; align-items: center; gap: 8px; font-size: 0.85rem;
-            background: rgba(0,0,0,0.3); padding: 10px 18px; border-radius: 50px;
+            display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 50px;
             border: 1px solid var(--glass-border);
         }
         .color-panchina { color: #8A2BE2; }
         .color-scuola { color: #0096FF; }
         .color-poi { color: #FF8C00; }
 
-        /* MAPPA */
-        #map-container { 
-            width: 100%; 
-            height: 550px; /* Altezza fissa per stabilità */
-            border-radius: 20px; 
-            overflow: hidden; 
-            border: 2px solid var(--glass-border); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            z-index: 1;
-        }
-        #map { width: 100%; height: 100%; }
+        /* Mappa */
+        #map-container { flex-grow: 1; min-height: 500px; width: 100%; border-radius: 20px; overflow: hidden; border: 2px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; }
+        #map { width: 100%; min-height: 500px; flex-grow: 1; z-index: 1; }
 
         .btn-back {
             background: rgba(255,255,255,0.2); color: white; text-decoration: none;
-            padding: 12px 28px; border-radius: 50px; font-weight: 600;
+            padding: 10px 25px; border-radius: 50px; font-weight: 600;
             border: 1px solid var(--glass-border); transition: all 0.3s ease;
-            margin-bottom: 20px; align-self: flex-start;
+            display: inline-block; margin-bottom: 20px; align-self: flex-start;
         }
         .btn-back:hover { background: rgba(255,255,255,0.4); transform: translateX(-5px); }
 
-        footer { width: 100%; text-align: center; padding: 25px; background: rgba(0, 0, 0, 0.4); font-size: 0.85rem; margin-top: auto; }
-        
-        /* Correzione per i PopUp della mappa per non rompere il tema */
-        .leaflet-popup-content-wrapper { background: rgba(26, 11, 46, 0.9) !important; color: white !important; border: 1px solid var(--viola-main); }
-        .leaflet-popup-tip { background: rgba(26, 11, 46, 0.9) !important; }
+        footer { width: 100%; text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -141,13 +180,14 @@
                 <img src="/media/UniviolaLogoFull.png" alt="Logo Uni Viola" class="nav-logo-img">
                 <span class="nav-logo-text">UniViola</span>
             </a>
-            <div class="hamburger"><span></span><span></span><span></span></div>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
             <ul class="nav-menu">
                 <li><a href="progetto.html">Il Progetto</a></li>
                 <li><a href="#">Podcast</a></li>
                 <li><a href="mappa-gentilezza.html">Mappa</a></li>
                 <li><a href="portfolio.html">Portfolio</a></li>
-                <li><a href="risorse.html">Risorse</a></li>
             </ul>
         </div>
     </nav>
@@ -169,11 +209,14 @@
         </div>
     </main>
 
-    <footer>Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"</footer>
+    <footer>
+        Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"<br>
+    </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <script>
+        // Logica Hamburger Menu
         const hamburger = document.querySelector(".hamburger");
         const navMenu = document.querySelector(".nav-menu");
         hamburger.addEventListener("click", () => {
@@ -181,37 +224,121 @@
             navMenu.classList.toggle("active");
         });
 
-        // Inizializzazione Mappa (Centrata su Cuneo/Piemonte)
-        var map = L.map('map').setView([44.5, 7.6], 9);
+        // Chiude il menu quando si clicca un link
+        document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
+            hamburger.classList.remove("active");
+            navMenu.classList.remove("active");
+        }));
+
+        // Inizializzazione Mappa
+        var map = L.map('map').setView([44.7416596, 7.6983000], 9);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors - Aviation Eagle'
         }).addTo(map);
 
         function createCustomPin(color, iconClass) {
             return L.divIcon({
                 className: 'custom-pin',
-                html: `<div style="background-color: ${color}; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.5); color: white;">
+                html: `<div style="background-color: ${color}; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.4); color: white; font-size: 16px;">
                          <i class="${iconClass}"></i>
                        </div>`,
-                iconSize: [34, 34],
-                iconAnchor: [17, 17],
-                popupAnchor: [0, -15]
+                iconSize: [42, 42],
+                iconAnchor: [21, 21], 
+                popupAnchor: [0, -20]
             });
         }
 
-        // Marker Database
-        const markers = [
-            { pos: [44.389547, 7.547919], icon: createCustomPin('#FF8C00', 'fas fa-star'), txt: "<b>Piazza Galimberti</b><br>Il cuore di Cuneo." },
-            { pos: [44.388395, 7.567114], icon: createCustomPin('#8A2BE2', 'fas fa-couch'), txt: "<b>💜 Panchina Viola</b><br>Simbolo contro il bullismo." },
-            { pos: [44.388726, 7.566091], icon: createCustomPin('#0096FF', 'fas fa-graduation-cap'), txt: "<b>IC BSG</b><br>Scuola partner Uni Viola." },
-            { pos: [44.393219, 7.5510855], icon: createCustomPin('#2c4865', 'fas fa-landmark'), txt: "<b>Comune di Cuneo</b>" },
-            { pos: [44.395654, 7.552566], icon: createCustomPin('#000e8f', 'fas fa-building-shield'), txt: "<b>Questura di Cuneo</b>" },
-            { pos: [44.38514, 7.5336596], icon: createCustomPin('#de0000', 'fas fa-star-of-life'), txt: "<b>Ospedale Santa Croce</b>" }
-        ];
+        var iconaPanchina = createCustomPin('#8A2BE2', 'fas fa-couch');
+        var iconaScuola = createCustomPin('#0096FF', 'fas fa-graduation-cap');
+        var iconaPoi = createCustomPin('#FF8C00', 'fas fa-star');
+        var iconaGov = createCustomPin('#2c4865', 'fas fa-landmark'); 
+        var iconaSafe = createCustomPin('#75b000', 'fas fa-user-shield');
+        var iconaPolice = createCustomPin('#000e8f', 'fas fa-building-shield');
+        var icona112 = createCustomPin('#de0000', 'fas fa-star-of-life' );
 
-        markers.forEach(m => L.marker(m.pos, {icon: m.icon}).addTo(map).bindPopup(m.txt));
+        // Markers (Dati invariati come richiesto)
+        L.marker([44.389547, 7.547919], {icon: iconaPoi}).addTo(map).bindPopup("<b>Piazza Galimberti</b><br>Il cuore pulsante di Cuneo.");
+        L.marker([44.388395, 7.567114], {icon: iconaPanchina}).addTo(map).bindPopup("<b>💜 Panchina Viola</b><br>Il nostro primo avamposto contro il bullismo.");
+        L.marker([44.388726, 7.566091], {icon: iconaScuola}).addTo(map).bindPopup("<b>IC BSG</b><br>Scuola partner del progetto Uni Viola.");
+        L.marker([44.393219,7.5510855], {icon: iconaGov}).addTo(map).bindPopup("<b>Comune di Cuneo</b><br>Partner ufficiale del concorso.");
+        L.marker([45.073103, 7.681251], {icon: iconaGov}).addTo(map).bindPopup("<b>Comune di Torino</b><br>Un luogo sicuro per tutti.");
+        L.marker([45.193964, 7.649319], {icon: iconaSafe}).addTo(map).bindPopup("<b>Aeroporto di Torino</b><br>Recati qui se puoi e ne hai bisogno.");
+        L.marker([44.395654, 7.552566], {icon: iconaPolice}).addTo(map).bindPopup("<b>Questura di Cuneo</b><br>Recati qui se puoi e ne hai bisogno.");
+        L.marker([44.38514,7.5336596], {icon: icona112}).addTo(map).bindPopup("<b>Ospedale Santa Croce</b><br>Richiedi aiuto solo in emergenza immediata.");
+        L.marker([45.05175001608306, 7.665638769244943], {icon: icona112}).addTo(map).bindPopup("<b>Ospedale Mauriziano</b>");
+        L.marker([45.033303217902905, 7.674623011871491], {icon: icona112}).addTo(map).bindPopup("<b>Ospedale CTO</b>");
+        L.marker([45.03434555174385, 7.674839687159111], {icon: icona112}).addTo(map).bindPopup("<b>Ospedale Regina Margherita</b>");
+        L.marker([45.041360811525934, 7.674254482955641], {icon: icona112}).addTo(map).bindPopup("<b>Ospedale Molinette</b>");
     </script>
+    <style>
+footer {
+    margin-top: auto;
+    width: 100%;
+    padding: 40px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--glass-border);
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-copy {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    color: #d8b4fe;
+}
+
+.footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-contacts a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-contacts a:hover {
+    color: var(--viola-main);
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    footer {
+        padding: 30px 15px;
+        font-size: 0.85rem;
+    }
+}
+</style>
+<footer>
+    <div class="footer-content">
+        <div class="footer-copy">
+            ©2026 by UNIVIOLA. Tutti i diritti riservati eccetto specifiche concessioni.
+        </div>
+<div class="footer-content">
+        <div class="footer-copy">
+      
+Progetto sviluppato per il Concorso "Contrapposizione al Bullismo"
+</div>
+        <div class="footer-contacts">
+            <a href="mailto:uni.viola@icborgosangiuseppe.edu.it">uni.viola@icborgosangiuseppe.edu.it</a>
+            <span>Via Rocca De' Baldi 15 — 12100 Cuneo (CN)</span>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
