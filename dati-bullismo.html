@@ -1,1 +1,267 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osservatorio Dati - Uni Viola</title>
+    <link rel="icon" type="image/x-icon" href="/media/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --viola-main: #8A2BE2;
+            --viola-dark: #4B0082;
+            --viola-light: #d8b4fe;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-glow: rgba(138, 43, 226, 0.4);
+        }
 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0; padding: 0;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ANIMAZIONE SCROLL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .nav-logo-text { font-family: 'Indie Flower', cursive; font-size: 1.6rem; color: white; text-decoration: none; }
+
+        .content-wrapper {
+            margin-top: 120px;
+            width: 90%;
+            max-width: 1100px;
+            padding-bottom: 80px;
+        }
+
+        header h1 {
+            font-family: 'Indie Flower', cursive;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            text-align: center;
+        }
+
+        /* GRID DATI COMPLETA (6 BOX) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .data-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .stat-number { display: block; font-size: 3.2rem; font-weight: 800; color: var(--viola-light); }
+        .stat-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: white; display: block; margin: 10px 0; }
+
+        /* GRAFICO RIPRISTINATO */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            margin: 60px 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            margin-top: 40px;
+        }
+
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 20%;
+            height: 100%; /* FIX: Necessario per calcolare le percentuali delle barre */
+            justify-content: flex-end;
+        }
+
+        .bar {
+            width: 60%;
+            background: linear-gradient(to top, var(--viola-dark), var(--viola-main));
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            height: 0; 
+            transition: height 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .bar-value { position: absolute; top: -30px; width: 100%; text-align: center; font-weight: bold; }
+        .bar-label { margin-top: 15px; font-size: 0.8rem; text-align: center; font-weight: 600; min-height: 40px;}
+
+        .formal-section {
+            background: rgba(0,0,0,0.4);
+            border-radius: 25px;
+            padding: 45px;
+            margin-top: 60px;
+            border-left: 6px solid var(--viola-main);
+            line-height: 1.8;
+        }
+
+        .formal-section h2 { font-family: 'Indie Flower', cursive; font-size: 2.5rem; }
+        .formal-section h3 { color: var(--viola-light); margin-top: 30px; }
+
+        .back-btn {
+            display: inline-block; padding: 15px 40px; background: var(--viola-main);
+            color: white; text-decoration: none; border-radius: 50px; font-weight: 800;
+            margin-top: 40px; transition: 0.3s;
+        }
+
+        footer { padding: 40px; text-align: center; opacity: 0.6; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo-text">UniViola</a>
+    </nav>
+
+    <div class="content-wrapper">
+        <header class="reveal">
+            <h1>Analisi Tattica Fenomeno</h1>
+            <p style="text-align:center; opacity:0.8;">Usando i dati ISTAT: Osservatorio Uni Viola 2026</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="data-card reveal">
+                <span class="stat-number">22%</span>
+                <span class="stat-label">Bullismo Fisico/Verbale</span>
+                <p>Studenti tra gli 11 e i 17 anni colpiti regolarmente.</p>
+            </div>
+            <div class="data-card reveal">
+                <span class="stat-number">1 su 10</span>
+                <span class="stat-label">Cyberbullismo</span>
+                <p>Attacchi sistematici tramite piattaforme digitali.</p>
+            </div>
+            <div class="data-card reveal">
+                <span class="stat-number">70%</span>
+                <span class="stat-label">Testimoni Passivi</span>
+                <p>Chi osserva senza intervenire (Bystander Effect).</p>
+            </div>
+            <div class="data-card reveal">
+                <span class="stat-number">54%</span>
+                <span class="stat-label">Episodi Ricorrenti</span>
+                <p>Vittime che subiscono più di un attacco al mese.</p>
+            </div>
+            <div class="data-card reveal">
+                <span class="stat-number">31%</span>
+                <span class="stat-label">Isolamento</span>
+                <p>Percezione di totale esclusione dal gruppo classe.</p>
+            </div>
+            <div class="data-card reveal">
+                <span class="stat-number">45%</span>
+                <span class="stat-label">Fascia Notturna</span>
+                <p>Picco di attività cyberbullistica (22:00 - 02:00).</p>
+            </div>
+        </div>
+
+        <div class="chart-container reveal" id="chart-section">
+            <h3 style="text-align:center; font-family:'Indie Flower', cursive; font-size:2rem;">Diffusione per Fascia d'Età (%)</h3>
+            <div class="bar-chart">
+                <div class="bar-wrapper">
+                    <div class="bar" data-height="20%"> <span class="bar-value">20%</span> </div>
+                    <span class="bar-label">Elementari</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" data-height="85%"> <span class="bar-value">42%</span> </div>
+                    <span class="bar-label">Medie</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" data-height="70%"> <span class="bar-value">35%</span> </div>
+                    <span class="bar-label">Superiori</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" data-height="25%"> <span class="bar-value">12%</span> </div>
+                    <span class="bar-label">Università</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="formal-section reveal">
+            <h2>Approfondimento Scientifico</h2>
+            
+            <h3>La Triade del Bullismo</h3>
+            <p>Perché un atto sia classificato come bullismo, la comunità scientifica internazionale concorda sulla presenza di tre fattori: 
+                <strong>1. Intenzionalità:</strong> la volontà esplicita di recare danno. 
+                <strong>2. Reiterazione:</strong> la ripetizione del gesto nel tempo. 
+                <strong>3. Squilibrio di Potere:</strong> una disparità che impedisce alla vittima di difendersi efficacemente.</p>
+
+            <h3>Il Paradosso del Cyberbullismo</h3>
+            <p>Il web elimina i confini spazio-temporali. La vittima non trova più rifugio tra le mura domestiche poiché l'aggressione persiste attraverso lo smartphone. L'<strong>Anomia Digitale</strong> (la perdita di norme sociali online) e la <strong>Disinibizione Tossica</strong> permettono all'aggressore di deumanizzare la vittima, non vedendone la reazione emotiva immediata.</p>
+
+            <h3>Dinamiche di Gruppo</h3>
+            <p>Il bullismo non è un rapporto a due, ma un fenomeno di gruppo. I "Sostenitori" e i "Difensori" giocano ruoli chiave: il silenzio dei primi alimenta l'aggressore, mentre l'azione dei secondi è l'unico vero deterrente sociale spontaneo.</p>
+        </div>
+
+        <div style="text-align: center;" class="reveal">
+            <a href="index.html" class="back-btn">TORNA ALLA PLANCIA</a>
+        </div>
+    </div>
+
+    <footer>Protocollo Uni Viola - Dati Aggiornati al 14/04/2026</footer>
+
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                    
+                    if(reveals[i].id === "chart-section") {
+                        let bars = reveals[i].querySelectorAll('.bar');
+                        bars.forEach(bar => {
+                            bar.style.height = bar.getAttribute('data-height');
+                        });
+                    }
+                }
+            }
+        }
+
+        window.addEventListener("scroll", reveal);
+        reveal(); // Controllo iniziale
+    </script>
+</body>
+</html>
