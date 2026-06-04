@@ -196,6 +196,55 @@
             left: 100%;
         }
 
+        /* INTEGRAZIONE NUOVA SEZIONE PARTNER */
+        .partners-section {
+            margin-top: 50px;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .partners-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #d8b4fe;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .partners-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .partner-banner {
+            background: #FFFFFF;
+            width: 240px;
+            height: 75px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0px; /* Rigorosamente squadrato come richiesto */
+        }
+
+        .partner-banner:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .partner-banner img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
         footer { margin-top: auto; width: 100%; text-align: center; padding: 25px; background: rgba(0, 0, 0, 0.4); font-size: 0.85rem; }
         
         /* COOKIE SHIELD FIX */
@@ -258,6 +307,18 @@
             </a>
 
             <a href="dati-bullismo.html" class="btn-liquid-glass">Scopri i Dati sul Bullismo</a>
+        </div>
+
+        <div class="partners-section">
+            <div class="partners-title">Partner Ufficiali del Progetto</div>
+            <div class="partners-row">
+                <div class="partner-banner">
+                    <img src="https://univiola.aviationeagle.co.uk/media/Bannrer.webp" alt="European Schoolnet">
+                </div>
+                <div class="partner-banner">
+                    <img src="https://univiola.aviationeagle.co.uk/media/Banner-2.webp" alt="Scientix">
+                </div>
+            </div>
         </div>
     </main>
 
